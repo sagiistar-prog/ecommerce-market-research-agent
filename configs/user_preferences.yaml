@@ -1,0 +1,32 @@
+{
+  "report_preferences": {
+    "audience": "AI product manager and content growth portfolio reviewer",
+    "tone": "clear, evidence-aware, interview-ready",
+    "decision_style": "separate facts, inferences, and recommendations",
+    "default_content_channel": "short-form visual commerce",
+    "preferred_sections": [
+      "Executive summary",
+      "Target market hypothesis",
+      "User segments",
+      "Competitor matrix summary",
+      "Price band observation",
+      "Product positioning",
+      "Content growth angles",
+      "Channel strategy",
+      "Risk notes",
+      "Evidence level and manual review notes"
+    ]
+  },
+  "manual_review_preferences": {
+    "flag_public_claims": true,
+    "flag_country_specific_assumptions": true,
+    "flag_price_and_shipping_assumptions": true,
+    "flag_synthetic_competitor_data": true
+  },
+  "safe_demo_preferences": {
+    "use_only_local_examples": true,
+    "use_real_companies": false,
+    "use_real_customer_data": false,
+    "use_live_fetching": false
+  }
+}

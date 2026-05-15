@@ -18,7 +18,7 @@
     },
     {
       "rank": 2,
-      "source": "Approved internal research export",
+      "source": "Reviewed user-provided research worksheet",
       "safe_demo_status": "Not used",
       "evidence_level": "E1"
     },
@@ -50,7 +50,7 @@
     },
     {
       "level": "E1",
-      "label": "User-provided or approved internal source",
+      "label": "User-provided or approved review source",
       "confidence": "Depends on source owner review",
       "allowed_use": "Draft analysis"
     },
@@ -88,9 +88,8 @@
       "live scraping",
       "private account access",
       "real customer data",
-      "tokens or credentials",
+      "credentials or secret keys",
       "unlabeled real company profiles"
     ]
   }
 }
-

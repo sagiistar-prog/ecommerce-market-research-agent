@@ -15,18 +15,19 @@ This repository is an independent portfolio project for the E-commerce Market Re
 - Public portfolio repositories must not include confidential project names, real business loops, real business models, real client information, real partners, real internal paths, real monetization design, or real product planning.
 - After any optimization, run `powershell -ExecutionPolicy Bypass -File scripts\portfolio_audit.ps1`.
 - If the audit fails, do not commit or push. Fix the flagged files first, then run the audit again.
+- Keep all examples fictional and generalized enough that they cannot be confused with any real project, partner, client, or operating path.
 
 ## Implementation Rules
 
-- Keep the generator local-file-only unless the README and configs are updated to describe a reviewed data policy.
+- Keep the generator local-file-only unless the README and configs are updated to describe a reviewed public data policy.
 - Do not add networking libraries such as `requests`, `httpx`, scraping frameworks, browser automation, or marketplace-specific SDKs for the Safe Demo.
 - Prefer transparent markdown output over hidden model calls.
-- Preserve `scripts/portfolio_audit.ps1` as a quick portfolio safety check.
+- Preserve `scripts/portfolio_audit.ps1` as a required portfolio safety check before commit and push.
 
 ## Demo Command
 
 ```bash
-python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --dry-run
+python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
 ```
 
 ## Review Checklist

@@ -6,7 +6,7 @@ Use this skill when a user wants to generate or improve a cross-border ecommerce
 
 - Use fictional or anonymized examples unless the user explicitly provides approved data.
 - Do not fetch live ecommerce data in the Safe Demo.
-- Do not include tokens, customer data, private chats, or real company profiles.
+- Do not include credentials, customer data, private chats, or real company profiles.
 - Label assumptions and evidence levels.
 - Add human review prompts for claims that touch compliance, sourcing, safety, health, certifications, durability, shipping, pricing, or advertising.
 
@@ -43,6 +43,5 @@ Use this skill when a user wants to generate or improve a cross-border ecommerce
 ## Safe Demo Command
 
 ```bash
-python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --dry-run
+python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
 ```
-

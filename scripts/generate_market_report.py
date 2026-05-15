@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import re
+from collections import Counter
 from datetime import date
 from pathlib import Path
 from statistics import mean
@@ -21,11 +22,15 @@ except ImportError:  # pragma: no cover - exercised only when PyYAML is absent
 NETWORK_IMPORTS_ARE_INTENTIONALLY_ABSENT = True
 
 
-def load_config(path: Path) -> dict[str, Any]:
+def load_config(path: Path | None) -> dict[str, Any]:
+    if path is None:
+        return {}
+
     text = path.read_text(encoding="utf-8")
     if yaml is not None:
         loaded = yaml.safe_load(text)
         return loaded if isinstance(loaded, dict) else {}
+
     loaded = json.loads(text)
     return loaded if isinstance(loaded, dict) else {}
 
@@ -43,21 +48,26 @@ def parse_product_brief(path: Path) -> dict[str, str]:
         if not clean:
             continue
 
-        bold_match = re.match(r"\*\*(.+?)\*\*:\s*(.+)$", clean)
+        bold_colon_inside = re.match(r"\*\*(.+?):\*\*\s*(.+)$", clean)
+        bold_colon_outside = re.match(r"\*\*(.+?)\*\*:\s*(.+)$", clean)
         plain_match = re.match(r"([A-Za-z][A-Za-z /_-]{2,40}):\s*(.+)$", clean)
-        match = bold_match or plain_match
+        match = bold_colon_inside or bold_colon_outside or plain_match
         if match:
             key = normalize_key(match.group(1))
             fields[key] = match.group(2).strip()
 
-    fields.setdefault("category", "Unspecified fictional category")
-    fields.setdefault("target_country", "Unspecified target country")
-    fields.setdefault("price_band", "Unspecified price band")
-    fields.setdefault("primary_channels", "Unspecified channels")
-    fields.setdefault("audience_hypothesis", "Unspecified audience")
-    fields.setdefault("research_goal", "Generate an early market research report")
-    fields.setdefault("positioning_note", "Keep claims evidence-aware and human reviewed")
-    fields.setdefault("constraints", "Use safe local demo inputs only")
+    defaults = {
+        "category": "Fictional ecommerce product category",
+        "target_country": "Fictional target market",
+        "price_band": "Fictional price band",
+        "primary_channels": "Short-form content and search-led marketplace listing",
+        "audience_hypothesis": "Early adopters who want a practical visual upgrade.",
+        "research_goal": "Generate an evidence-aware early market research report.",
+        "positioning_note": "Keep claims evidence-aware and human reviewed.",
+        "constraints": "Use safe local demo inputs only.",
+    }
+    for key, value in defaults.items():
+        fields.setdefault(key, value)
     return fields
 
 
@@ -85,14 +95,32 @@ def config_table(config: dict[str, Any], key: str, headers: list[str], fields: l
     items = config.get(key, [])
     if not isinstance(items, list):
         return "_No config entries found._"
+
     rows: list[list[str]] = []
     for item in items:
         if isinstance(item, dict):
             rows.append([str(item.get(field, "")) for field in fields])
-    return markdown_table(headers, rows)
+    return markdown_table(headers, rows) if rows else "_No config entries found._"
 
 
-def competitor_table(rows: list[dict[str, str]]) -> str:
+def source_policy_table(source_policy: dict[str, Any], rules: dict[str, Any]) -> str:
+    if source_policy.get("source_priority"):
+        return config_table(
+            source_policy,
+            "source_priority",
+            ["Rank", "Source type", "Evidence", "Notes"],
+            ["rank", "source_type", "evidence_level", "notes"],
+        )
+
+    return config_table(
+        rules,
+        "source_priority",
+        ["Rank", "Source", "Safe Demo Status", "Evidence"],
+        ["rank", "source", "safe_demo_status", "evidence_level"],
+    )
+
+
+def competitor_matrix(rows: list[dict[str, str]]) -> str:
     table_rows = []
     for row in rows:
         table_rows.append(
@@ -102,21 +130,43 @@ def competitor_table(rows: list[dict[str, str]]) -> str:
                 row.get("channel", ""),
                 row.get("positioning_claim", ""),
                 row.get("key_feature", ""),
+                row.get("content_hook", ""),
                 row.get("evidence_level", "E0"),
             ]
         )
     return markdown_table(
-        ["Fictional competitor", "Price", "Channel", "Positioning", "Key feature", "Evidence"],
+        ["Fictional competitor", "Price", "Channel", "Positioning", "Key feature", "Content hook", "Evidence"],
         table_rows,
     )
 
 
-def channel_counts(rows: list[dict[str, str]]) -> dict[str, int]:
-    counts: dict[str, int] = {}
-    for row in rows:
-        channel = row.get("channel", "Unspecified")
-        counts[channel] = counts.get(channel, 0) + 1
-    return counts
+def channel_summary(rows: list[dict[str, str]]) -> str:
+    counts = Counter(row.get("channel", "Unspecified") for row in rows)
+    return ", ".join(f"{channel}: {count}" for channel, count in counts.items())
+
+
+def build_user_segments(brief: dict[str, str]) -> list[list[str]]:
+    category = brief["category"]
+    return [
+        [
+            "Small-space remote worker",
+            f"Wants a compact {category} setup that improves the desk visually.",
+            "May worry about clutter, cable visibility, and setup time.",
+            "Show footprint, cable routing, and before-after desk reset footage.",
+        ],
+        [
+            "Student creator",
+            "Needs an affordable visual upgrade for study clips and casual content.",
+            "May worry that lighting controls are complicated.",
+            "Use quick setup clips and simple scene presets.",
+        ],
+        [
+            "Gift buyer",
+            "Needs a useful desk gift that is easy to understand without exact specs.",
+            "May worry about compatibility, returns, and package contents.",
+            "Make package contents, setup requirements, and return policy plain.",
+        ],
+    ]
 
 
 def build_content_angles(brief: dict[str, str], rows: list[dict[str, str]]) -> list[list[str]]:
@@ -125,8 +175,8 @@ def build_content_angles(brief: dict[str, str], rows: list[dict[str, str]]) -> l
     hooks = [
         [
             "Desk reset transformation",
-            "Short-video commerce",
-            f"Turn a cramped desk into a warmer {category} setup in under 30 seconds.",
+            "Short-form visual commerce",
+            f"Turn a cramped desk into a warmer {category} setup in one quick sequence.",
             "Needs product footage and no productivity promise.",
         ],
         [
@@ -142,9 +192,9 @@ def build_content_angles(brief: dict[str, str], rows: list[dict[str, str]]) -> l
             "Needs packaging, shipping, and return-policy review.",
         ],
         [
-            "Magnetic layout demo",
-            "Short-video commerce",
-            "Show three rearranged layouts from the same kit.",
+            "Modular layout demo",
+            "Short-form visual commerce",
+            "Show three rearranged layouts from the same fictional kit.",
             "Needs durability and attachment review.",
         ],
     ]
@@ -154,17 +204,42 @@ def build_content_angles(brief: dict[str, str], rows: list[dict[str, str]]) -> l
             [
                 f"Differentiate from {row.get('brand', 'fictional competitor')}",
                 row.get("channel", "Channel test"),
-                f"Contrast against '{row.get('content_hook', 'generic setup content')}' with a clearer use case.",
+                f"Counter the fixture hook '{row.get('content_hook', 'generic setup content')}' with a clearer use case.",
                 "Treat as synthetic competitor observation.",
             ]
         )
     return hooks
 
 
+def build_channel_strategy(brief: dict[str, str]) -> list[list[str]]:
+    return [
+        [
+            "Short-form visual commerce",
+            "Use fast before-after demos and modular layout clips.",
+            "Hook rate, save rate, product-page click-through.",
+            "Avoid claims that imply guaranteed focus or wellness outcomes.",
+        ],
+        [
+            "Search-led marketplace listing",
+            "Start with dimensions, package contents, setup steps, and use cases.",
+            "Search conversion, question volume, return reasons.",
+            "Confirm all specs before publishing.",
+        ],
+        [
+            "Creator storefront",
+            "Ask creators to show honest setup time and desk fit.",
+            "Creator click-through, assisted purchases, qualitative objections.",
+            "Use fictional demo assumptions only in this repository.",
+        ],
+    ]
+
+
 def build_report(
     brief: dict[str, str],
     competitors: list[dict[str, str]],
     rules: dict[str, Any],
+    source_policy: dict[str, Any],
+    preferences: dict[str, Any],
     input_path: Path,
     competitor_path: Path,
     dry_run: bool,
@@ -173,26 +248,18 @@ def build_report(
     avg_price = mean(prices) if prices else 0.0
     min_price = min(prices) if prices else 0.0
     max_price = max(prices) if prices else 0.0
-    counts = channel_counts(competitors)
-    channel_summary = ", ".join(f"{channel}: {count}" for channel, count in counts.items())
-
-    source_table = config_table(
-        rules,
-        "source_priority",
-        ["Rank", "Source", "Safe Demo Status", "Evidence"],
-        ["rank", "source", "safe_demo_status", "evidence_level"],
-    )
-    evidence_table = config_table(
-        rules,
-        "evidence_levels",
-        ["Level", "Label", "Confidence", "Allowed Use"],
-        ["level", "label", "confidence", "allowed_use"],
-    )
-    review_prompts = rules.get("human_review_prompts", [])
+    content_rows = build_content_angles(brief, competitors)
+    review_prompts = list(rules.get("human_review_prompts", []))
     if not isinstance(review_prompts, list):
         review_prompts = []
 
-    content_rows = build_content_angles(brief, competitors)
+    report_audience = (
+        preferences.get("report_preferences", {}).get("audience")
+        if isinstance(preferences.get("report_preferences"), dict)
+        else None
+    )
+    if not report_audience:
+        report_audience = "AI product manager and content growth reviewer"
 
     report_lines = [
         "# Generated Market Research Report",
@@ -207,123 +274,116 @@ def build_report(
         f"- Product brief: `{input_path.as_posix()}`",
         f"- Competitor fixture: `{competitor_path.as_posix()}`",
         "- Evidence level for demo inputs: E0",
+        f"- Intended reader: {report_audience}",
         "",
-        "## Executive Snapshot",
+        "## Executive summary",
         "",
         markdown_table(
-            ["Field", "Value"],
+            ["Layer", "Output", "Evidence"],
             [
-                ["Category", brief["category"]],
-                ["Target country", brief["target_country"]],
-                ["Price band", brief["price_band"]],
-                ["Primary channels", brief["primary_channels"]],
-                ["Audience hypothesis", brief["audience_hypothesis"]],
-                ["Research goal", brief["research_goal"]],
+                ["Fact", f"{brief['category']} is tested for {brief['target_country']} at {brief['price_band']}.", "E0 demo fixture"],
+                ["Inference", "Visual desk transformation and small-space proof are likely stronger than technical feature lists.", "E4 hypothesis"],
+                ["Recommendation", "Run content-first tests while keeping claims conservative and reviewed.", "Requires manual review"],
             ],
         ),
         "",
-        "## Research Boundaries",
+        "## Target market hypothesis",
         "",
-        f"- Constraints: {brief['constraints']}",
-        f"- Positioning note: {brief['positioning_note']}",
-        "- The report separates observed demo fixtures from generated hypotheses.",
-        "- Human review is required before using any claim in public commercial content.",
+        f"- Category: {brief['category']}",
+        f"- Target market: {brief['target_country']}",
+        f"- Price band: {brief['price_band']}",
+        f"- Primary channels: {brief['primary_channels']}",
+        f"- Audience hypothesis: {brief['audience_hypothesis']}",
+        "- Core hypothesis: buyers first understand the product through visible setup improvement, not abstract performance claims.",
+        f"- Fixture channel coverage: {channel_summary(competitors)}.",
         "",
-        "## Source Priority",
+        "## User segments",
         "",
-        source_table,
+        markdown_table(
+            ["Segment", "Job to be done", "Likely objection", "Content response"],
+            build_user_segments(brief),
+        ),
         "",
-        "## Evidence Levels",
+        "## Competitor matrix summary",
         "",
-        evidence_table,
+        competitor_matrix(competitors),
         "",
-        "## Market Hypotheses",
-        "",
-        f"- The strongest early test audience is likely inside the stated audience hypothesis: {brief['audience_hypothesis']}",
-        f"- The price band of {brief['price_band']} suggests the product should be framed as an accessible upgrade rather than a premium hardware purchase.",
-        f"- Channel coverage in the fictional fixture is concentrated across: {channel_summary}.",
-        "- Visual transformation content is likely more useful than technical feature lists for first-touch discovery.",
-        "- Search-led listing copy should emphasize concrete use cases, dimensions, setup simplicity, and giftability.",
-        "",
-        "## Fictional Competitor Matrix",
-        "",
-        competitor_table(competitors),
-        "",
-        "## Price-Band Read",
+        "## Price band observation",
         "",
         f"- Fictional competitor price range: ${min_price:.0f}-${max_price:.0f}.",
         f"- Fictional average competitor price: ${avg_price:.0f}.",
-        f"- Demo interpretation: the target price band should preserve a clear value story below the highest fictional competitor while still supporting giftable packaging and visual content assets.",
+        f"- Demo read: {brief['price_band']} should support a value-led message while leaving room for packaging, setup proof, and content assets.",
+        "- Evidence note: all price points are synthetic and cannot be used as real market benchmarks.",
         "",
-        "## Buyer Personas",
+        "## Product positioning",
         "",
         markdown_table(
-            ["Persona", "Job To Be Done", "Likely Objection", "Content Response"],
+            ["Positioning pillar", "What to say", "What to avoid"],
             [
-                [
-                    "Small-space remote worker",
-                    "Make a compact desk feel more intentional for calls and evening work.",
-                    "Worried it will add clutter.",
-                    "Show cable routing, footprint, and before-after desk resets.",
-                ],
-                [
-                    "Student creator",
-                    "Create a more expressive setup for study clips and casual content.",
-                    "Worried it looks complicated.",
-                    "Use quick setup videos and rearranged magnetic layouts.",
-                ],
-                [
-                    "Gift buyer",
-                    "Find a useful desk gift that feels personal without needing exact specs.",
-                    "Worried about compatibility and returns.",
-                    "Make compatibility, package contents, and return policy clear.",
-                ],
+                ["Compact transformation", "A simple visual desk upgrade for small spaces.", "Unsupported productivity or wellness outcomes."],
+                ["Modular setup", "Rearrangeable layout for desks, shelves, and content corners.", "Claims of superior durability without proof."],
+                ["Giftable utility", "Easy to understand, easy to set up, and visually satisfying.", "Promises about universal compatibility."],
             ],
         ),
         "",
-        "## Content Growth Angles",
+        "## Content growth angles",
         "",
         markdown_table(
-            ["Angle", "Channel", "Hook", "Review Needed"],
+            ["Angle", "Channel", "Hook", "Review needed"],
             content_rows,
         ),
         "",
-        "## Messaging Pillars",
-        "",
-        "- Compact transformation: focus on visible desk improvement in a small area.",
-        "- Rearrangeable setup: show modular layouts without claiming technical superiority.",
-        "- Giftable utility: position as useful, visual, and easy to understand.",
-        "- Low-friction setup: emphasize simple installation only if supported by product proof.",
-        "",
-        "## Risk Register",
+        "## Channel strategy",
         "",
         markdown_table(
-            ["Risk", "Why It Matters", "Mitigation"],
+            ["Channel", "Role", "Measure", "Manual review focus"],
+            build_channel_strategy(brief),
+        ),
+        "",
+        "## Risk notes",
+        "",
+        markdown_table(
+            ["Risk", "Why it matters", "Mitigation"],
             [
                 [
                     "Unsupported performance claims",
-                    "Productivity, wellness, and focus claims can be misleading if unverified.",
-                    "Use visual and functional claims only; require human review for stronger wording.",
+                    "Focus, wellness, and productivity claims can be misleading if unverified.",
+                    "Use visual and functional claims only; review stronger wording manually.",
                 ],
                 [
                     "Country-specific compliance gaps",
-                    "Lighting products may need electrical, labeling, or packaging review.",
-                    f"Run a {brief['target_country']} compliance check before launch.",
+                    "Lighting products may require labeling, safety, or packaging review.",
+                    f"Run a {brief['target_country']} compliance check before real launch use.",
                 ],
                 [
-                    "Content overpromises",
-                    "Short-form hooks can exaggerate benefits.",
-                    "Attach evidence labels and avoid before-after claims that imply guaranteed outcomes.",
+                    "Synthetic competitor data",
+                    "Fixture rows are useful for workflow demonstration, not real competitive strategy.",
+                    "Replace with reviewed source logs before production use.",
                 ],
                 [
                     "Price and shipping assumptions",
-                    "The report uses synthetic data, not verified landed cost.",
-                    "Confirm margins, duties, fulfillment times, warranty, and returns.",
+                    "The report does not verify landed cost, delivery time, or return policy.",
+                    "Confirm costs, fulfillment, warranty, and return language before publishing.",
                 ],
             ],
         ),
         "",
-        "## Human Review Checklist",
+        "## Evidence level and manual review notes",
+        "",
+        "### Source priority",
+        "",
+        source_policy_table(source_policy, rules),
+        "",
+        "### Evidence levels",
+        "",
+        config_table(
+            rules,
+            "evidence_levels",
+            ["Level", "Label", "Confidence", "Allowed use"],
+            ["level", "label", "confidence", "allowed_use"],
+        ),
+        "",
+        "### Manual review checklist",
         "",
     ]
 
@@ -332,19 +392,14 @@ def build_report(
 
     report_lines.extend(
         [
+            "- Confirm all public copy separates facts, inferences, and recommendations.",
+            "- Replace synthetic rows with reviewed source logs before real launch decisions.",
             "",
-            "## Next Experiments",
-            "",
-            "- Test two short-video hooks: desk reset transformation vs. magnetic layout demo.",
-            "- Test one search-led listing variant focused on compact setup proof.",
-            "- Create a creator brief that asks for honest setup time, footprint, and cable visibility.",
-            "- Collect reviewed evidence before turning any hypothesis into a public claim.",
-            "",
-            "## Demo Provenance",
+            "## Demo provenance",
             "",
             "- Product and competitor names are fictional.",
             "- Metrics are synthetic and should not be treated as market facts.",
-            "- No token, private customer data, real company data, or live marketplace data was used.",
+            "- No credentials, private customer data, real company data, or live marketplace data was used.",
         ]
     )
 
@@ -357,6 +412,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--competitors", required=True, type=Path, help="Path to fictional competitor CSV.")
     parser.add_argument("--output", required=True, type=Path, help="Path to write generated markdown report.")
     parser.add_argument("--rules", required=True, type=Path, help="Path to research rules config.")
+    parser.add_argument("--sources", type=Path, help="Optional source policy config.")
+    parser.add_argument("--preferences", type=Path, help="Optional report preferences config.")
     parser.add_argument("--dry-run", action="store_true", help="Mark output as Safe Demo dry run.")
     return parser.parse_args()
 
@@ -367,11 +424,15 @@ def main() -> int:
     brief = parse_product_brief(args.input)
     competitors = load_competitors(args.competitors)
     rules = load_config(args.rules)
+    source_policy = load_config(args.sources)
+    preferences = load_config(args.preferences)
 
     report = build_report(
         brief=brief,
         competitors=competitors,
         rules=rules,
+        source_policy=source_policy,
+        preferences=preferences,
         input_path=args.input,
         competitor_path=args.competitors,
         dry_run=args.dry_run,
@@ -385,4 +446,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

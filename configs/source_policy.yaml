@@ -9,9 +9,9 @@
     },
     {
       "rank": 2,
-      "source_type": "Approved internal export",
+      "source_type": "Reviewed user-provided research worksheet",
       "evidence_level": "E1",
-      "notes": "Use only when the owner confirms the data is approved for this project."
+      "notes": "Use only when the source owner confirms the material is allowed for this repository."
     },
     {
       "rank": 3,
@@ -37,7 +37,7 @@
     "Customer records",
     "Chat logs",
     "Payment or order data",
-    "Credentials or tokens",
+    "Credentials or secret keys",
     "Unreviewed live scraping in Safe Demo"
   ],
   "human_review_required_for": [
@@ -49,4 +49,3 @@
     "Pricing, shipping, warranty, and return promises"
   ]
 }
-

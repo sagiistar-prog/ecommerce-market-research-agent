@@ -27,14 +27,15 @@ The agent reads a local CSV with fictional competitor entries:
 
 The Safe Demo uses `examples/sample_competitor_table.csv`.
 
-## 3. Apply Research Rules
+## 3. Apply Research Rules And Preferences
 
-The generator loads `configs/research_rules.yaml` to apply:
+The generator loads local configs to apply:
 
 - Source priority.
 - Evidence levels.
 - Human review prompts.
 - Safe-demo boundaries.
+- Report preferences for product manager and content growth review.
 
 ## 4. Generate Research Report
 
@@ -48,6 +49,8 @@ The report includes:
 - Messaging pillars.
 - Risk register.
 - Human review checklist.
+
+The report separates facts, inferences, and recommendations so readers can see what came from fixtures and what is a hypothesis.
 
 ## 5. Human Review
 
@@ -69,4 +72,3 @@ powershell -ExecutionPolicy Bypass -File scripts/portfolio_audit.ps1
 ```
 
 The audit checks that the repository remains safe to publish.
-
