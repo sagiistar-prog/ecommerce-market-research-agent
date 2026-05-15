@@ -1,0 +1,52 @@
+{
+  "policy_name": "Source Priority and Evidence Policy",
+  "source_priority": [
+    {
+      "rank": 1,
+      "source_type": "Product brief supplied by the user",
+      "evidence_level": "E0 for demo, E1 after source-owner review",
+      "notes": "Primary context for category, country, price band, channels, and constraints."
+    },
+    {
+      "rank": 2,
+      "source_type": "Approved internal export",
+      "evidence_level": "E1",
+      "notes": "Use only when the owner confirms the data is approved for this project."
+    },
+    {
+      "rank": 3,
+      "source_type": "Human-reviewed public pages",
+      "evidence_level": "E2",
+      "notes": "Must retain citations in production; not used in Safe Demo."
+    },
+    {
+      "rank": 4,
+      "source_type": "Human-reviewed social or creator samples",
+      "evidence_level": "E2",
+      "notes": "Useful for content patterns; avoid treating engagement as market truth."
+    },
+    {
+      "rank": 5,
+      "source_type": "Agent-generated hypothesis",
+      "evidence_level": "E4",
+      "notes": "Must be labeled as a hypothesis and converted into a test."
+    }
+  ],
+  "forbidden_sources": [
+    "Private accounts without explicit permission",
+    "Customer records",
+    "Chat logs",
+    "Payment or order data",
+    "Credentials or tokens",
+    "Unreviewed live scraping in Safe Demo"
+  ],
+  "human_review_required_for": [
+    "Public advertising claims",
+    "Compliance-sensitive categories",
+    "Health or safety language",
+    "Country-specific product restrictions",
+    "Supplier origin or certification claims",
+    "Pricing, shipping, warranty, and return promises"
+  ]
+}
+

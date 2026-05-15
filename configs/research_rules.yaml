@@ -1,0 +1,96 @@
+{
+  "agent_name": "E-commerce Market Research Agent",
+  "safe_demo": {
+    "enabled": true,
+    "external_network": false,
+    "allowed_inputs": [
+      "examples/sample_product_brief.md",
+      "examples/sample_competitor_table.csv"
+    ],
+    "disclaimer": "Safe Demo uses fictional and synthetic examples only."
+  },
+  "source_priority": [
+    {
+      "rank": 1,
+      "source": "User-provided product brief",
+      "safe_demo_status": "Allowed",
+      "evidence_level": "E0 in demo, E1 in reviewed production use"
+    },
+    {
+      "rank": 2,
+      "source": "Approved internal research export",
+      "safe_demo_status": "Not used",
+      "evidence_level": "E1"
+    },
+    {
+      "rank": 3,
+      "source": "Human-reviewed public product or marketplace page",
+      "safe_demo_status": "Not used",
+      "evidence_level": "E2"
+    },
+    {
+      "rank": 4,
+      "source": "Human-reviewed creator or social content sample",
+      "safe_demo_status": "Not used",
+      "evidence_level": "E2"
+    },
+    {
+      "rank": 5,
+      "source": "Model-generated hypothesis",
+      "safe_demo_status": "Allowed only when labeled",
+      "evidence_level": "E4"
+    }
+  ],
+  "evidence_levels": [
+    {
+      "level": "E0",
+      "label": "Fictional demo fixture",
+      "confidence": "Demo only",
+      "allowed_use": "Portfolio Safe Demo"
+    },
+    {
+      "level": "E1",
+      "label": "User-provided or approved internal source",
+      "confidence": "Depends on source owner review",
+      "allowed_use": "Draft analysis"
+    },
+    {
+      "level": "E2",
+      "label": "Reviewed public source",
+      "confidence": "Moderate when citation is retained",
+      "allowed_use": "Low-risk observations"
+    },
+    {
+      "level": "E3",
+      "label": "Corroborated multi-source evidence",
+      "confidence": "Higher confidence with source logs",
+      "allowed_use": "Recommendations with caveats"
+    },
+    {
+      "level": "E4",
+      "label": "Unverified hypothesis",
+      "confidence": "Low",
+      "allowed_use": "Testing backlog only"
+    }
+  ],
+  "human_review_prompts": [
+    "Verify product claims before using them in ads, listings, or creator scripts.",
+    "Review country-specific compliance requirements before launch.",
+    "Confirm price, shipping, warranty, returns, and sourcing assumptions.",
+    "Check that content hooks do not imply unsupported health, safety, or performance outcomes.",
+    "Separate observed evidence from generated hypotheses."
+  ],
+  "claim_policy": {
+    "allow_hypotheses": true,
+    "require_evidence_label": true,
+    "require_human_review_for_public_claims": true,
+    "forbidden_in_safe_demo": [
+      "live scraping",
+      "private account access",
+      "real customer data",
+      "tokens or credentials",
+      "unlabeled real company profiles"
+    ]
+  }
+}
+
