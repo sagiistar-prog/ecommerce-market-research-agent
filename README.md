@@ -101,8 +101,8 @@ The audit checks for required files, secret-like strings, safe-demo wording, and
 
 ## Safety Notes
 
-- No token, credential, real customer data, or real company profile is included.
+- No credentials, secret keys, real customer data, or real company profile is included.
 - Example competitors are fictional.
 - Example metrics are synthetic and should not be treated as market facts.
+- This public portfolio repository is intentionally generalized and does not include private business logic, client data, internal product strategy, or confidential information from any real project.
 - The generated report is a portfolio demo, not investment, legal, compliance, or sourcing advice.
-
