@@ -36,7 +36,7 @@
     "Private accounts without explicit permission",
     "Customer records",
     "Chat logs",
-    "Payment or order data",
+    "Transaction records",
     "Credentials or secret keys",
     "Unreviewed live scraping in Safe Demo"
   ],

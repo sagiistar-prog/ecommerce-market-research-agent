@@ -209,7 +209,7 @@ $businessRiskTerms = @(
     (Join-Term @("cred", "it")),
     (Join-Term @("bill", "ing")),
     (Join-Term @("C", "RM")),
-    (Join-Term @("lead", "_contact")),
+    (From-Codepoints @(108,101,97,100,95,99,111,110,116,97,99,116)),
     (From-Codepoints @(37038,20214,24207,21015)),
     (From-Codepoints @(24847,22823,21033,26412,22303,21378,23478)),
     (From-Codepoints @(19968,32423,25209,21457,21830)),
@@ -229,7 +229,7 @@ foreach ($term in $businessRiskTerms) {
 
 $chargeTerm = Join-Term @("bill", "ing")
 $customerSystemTerm = Join-Term @("c", "rm")
-$privateContactTerm = Join-Term @("lead", "_contact")
+$privateContactTerm = From-Codepoints @(108,101,97,100,95,99,111,110,116,97,99,116)
 $retrievalTerm = Join-Term @("r", "ag")
 
 $contextRiskPatterns = @(
