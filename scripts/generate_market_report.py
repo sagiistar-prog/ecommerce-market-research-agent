@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import re
+from io import StringIO
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -39,8 +40,7 @@ def normalize_key(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
 
 
-def parse_product_brief(path: Path) -> dict[str, str]:
-    text = path.read_text(encoding="utf-8")
+def parse_product_brief_text(text: str) -> dict[str, str]:
     fields: dict[str, str] = {"raw_text": text}
 
     for line in text.splitlines():
@@ -71,9 +71,20 @@ def parse_product_brief(path: Path) -> dict[str, str]:
     return fields
 
 
+def parse_product_brief(path: Path) -> dict[str, str]:
+    return parse_product_brief_text(path.read_text(encoding="utf-8"))
+
+
+def load_competitors_text(text: str) -> list[dict[str, str]]:
+    rows = list(csv.DictReader(StringIO(text)))
+    if not rows:
+        raise ValueError("No competitor rows found in CSV text")
+    return rows
+
+
 def load_competitors(path: Path) -> list[dict[str, str]]:
     with path.open("r", encoding="utf-8", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        rows = load_competitors_text(handle.read())
     if not rows:
         raise ValueError(f"No competitor rows found in {path}")
     return rows

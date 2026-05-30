@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>E-commerce Market Research Agent</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Safe Demo Local App</p>
+            <h1 id="app-title">E-commerce Market Research Agent</h1>
+          </div>
+          <div class="status-strip" aria-label="Safety status">
+            <span>Local only</span>
+            <span>Fictional data</span>
+            <span>Manual review</span>
+          </div>
+        </header>
+
+        <div class="layout-grid">
+          <form class="input-panel" id="agent-form">
+            <div class="panel-header">
+              <h2>Research Inputs</h2>
+              <button class="secondary-button" type="button" id="load-sample">Load sample</button>
+            </div>
+
+            <label for="brief">Product brief</label>
+            <textarea id="brief" name="brief" spellcheck="false"></textarea>
+
+            <label for="competitors">Fictional competitor CSV</label>
+            <textarea id="competitors" name="competitors" spellcheck="false"></textarea>
+
+            <div class="actions">
+              <button class="primary-button" type="submit">Generate report</button>
+              <button class="secondary-button" type="button" id="copy-report">Copy report</button>
+              <button class="secondary-button" type="button" id="download-report">Download</button>
+            </div>
+          </form>
+
+          <section class="output-panel" aria-labelledby="report-title">
+            <div class="panel-header">
+              <h2 id="report-title">Generated Report</h2>
+              <p id="status" role="status">Ready</p>
+            </div>
+            <article id="report-preview" class="report-preview">
+              <p class="empty-state">Load the fictional sample or paste your own anonymized demo inputs, then generate a report.</p>
+            </article>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

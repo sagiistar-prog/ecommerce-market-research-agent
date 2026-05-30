@@ -33,6 +33,16 @@ All example product and competitor data is fictional.
 - Does not include real company research.
 - Does not produce verified market-size estimates.
 
+## Browser UI
+
+Run:
+
+```powershell
+py -3 scripts/app_server.py --port 8765
+```
+
+Open `http://127.0.0.1:8765` to use the local app. The UI uses the same fictional examples and local configs as the command-line demo.
+
 ## Expected Output
 
 The output report is written to:

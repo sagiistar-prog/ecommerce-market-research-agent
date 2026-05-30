@@ -9,6 +9,7 @@ The project demonstrates AI product manager judgment: facts, inferences, and rec
 ## What It Shows
 
 - Market research Agent workflow for early ecommerce category testing.
+- A local web app that lets users edit inputs and generate the report in a browser.
 - Content growth translation from research notes into channel angles and messaging pillars.
 - Evidence grading so demo facts, hypotheses, and recommendations are not mixed together.
 - Manual review gates for product claims, compliance assumptions, pricing, shipping, and public copy.
@@ -55,6 +56,29 @@ py -3 scripts/generate_market_report.py --input examples/sample_product_brief.md
 
 The command only reads local files under `examples/` and `configs/`. It does not scrape, fetch, or verify live market data.
 
+## Local Web App
+
+Run the browser UI from the project root:
+
+```powershell
+py -3 scripts/app_server.py --port 8765
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8765
+```
+
+The local app lets users:
+
+- Load the fictional sample brief and competitor CSV.
+- Edit anonymized demo inputs in the browser.
+- Generate the market research report without writing user input into tracked files.
+- Copy or download the generated Markdown report.
+
+The server only binds to the local machine and uses the same Safe Demo rules as the command-line workflow.
+
 ## What The Agent Produces
 
 - Executive summary.
@@ -90,11 +114,13 @@ LICENSE
 docs/case-study.md
 docs/workflow.md
 docs/research-framework.md
+docs/app-ui.md
 docs/source-policy.md
 docs/interview-summary.md
 docs/safe-demo.md
 skills/ecommerce-market-research-agent/SKILL.md
 scripts/generate_market_report.py
+scripts/app_server.py
 scripts/portfolio_audit.ps1
 configs/research_rules.yaml
 configs/source_policy.yaml
@@ -102,6 +128,9 @@ configs/user_preferences.yaml
 examples/sample_product_brief.md
 examples/sample_competitor_table.csv
 examples/generated_market_report.md
+web/index.html
+web/styles.css
+web/app.js
 ```
 
 ## Install

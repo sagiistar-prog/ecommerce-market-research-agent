@@ -54,18 +54,23 @@ $requiredFiles = @(
     "docs/case-study.md",
     "docs/workflow.md",
     "docs/research-framework.md",
+    "docs/app-ui.md",
     "docs/source-policy.md",
     "docs/interview-summary.md",
     "docs/safe-demo.md",
     "skills/ecommerce-market-research-agent/SKILL.md",
     "scripts/generate_market_report.py",
+    "scripts/app_server.py",
     "scripts/portfolio_audit.ps1",
     "configs/research_rules.yaml",
     "configs/source_policy.yaml",
     "configs/user_preferences.yaml",
     "examples/sample_product_brief.md",
     "examples/sample_competitor_table.csv",
-    "examples/generated_market_report.md"
+    "examples/generated_market_report.md",
+    "web/index.html",
+    "web/styles.css",
+    "web/app.js"
 )
 
 $failures = New-Object System.Collections.Generic.List[string]

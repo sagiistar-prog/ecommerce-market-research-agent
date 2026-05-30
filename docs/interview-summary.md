@@ -15,11 +15,13 @@ Early ecommerce research often mixes facts, assumptions, and content ideas. This
 - The generated report separates facts, inferences, and recommendations.
 - Evidence levels are visible in the output.
 - Manual review is built into the workflow.
+- A local browser UI makes the agent usable as a small demo app.
 - The audit script acts as a pre-commit safety gate for public portfolio use.
 
 ## Product Thinking Demonstrated
 
 - Defines an input schema around product brief, competitor fixture, source policy, and preferences.
+- Adds a simple browser interface for editing inputs and generating reports.
 - Converts research into audience segments, positioning, content growth angles, and channel strategy.
 - Keeps risk management visible through evidence levels and review prompts.
 - Designs for interview readability rather than raw automation alone.
