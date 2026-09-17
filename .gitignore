@@ -22,3 +22,9 @@ env/
 Thumbs.db
 .vscode/
 .idea/
+
+output/
+
+.impeccable/
+
+test-results/

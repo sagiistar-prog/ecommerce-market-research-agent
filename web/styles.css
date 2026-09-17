@@ -1,14 +1,14 @@
 :root {
   color-scheme: light;
-  --bg: #f4f7f2;
+  --bg: #f5f7fc;
   --surface: #ffffff;
   --surface-muted: #eef4f7;
   --ink: #1f2933;
-  --muted: #607083;
+  --muted: #566176;
   --line: #cfd9df;
-  --accent: #126a6f;
-  --accent-dark: #0d4f54;
-  --accent-soft: #d8eff0;
+  --accent: #405aca;
+  --accent-dark: #30449e;
+  --accent-soft: #e5eafb;
   --warn: #8a5a00;
   --shadow: 0 16px 40px rgba(31, 41, 51, 0.12);
 }
@@ -314,3 +314,21 @@ textarea:focus {
     width: 100%;
   }
 }
+
+/* The existing teal workspace identity is retained. */
+[hidden] { display: none !important; }
+.intro { margin: 12px 0 0; color: var(--muted); max-width: 68ch; line-height: 1.6; }
+.field-help { font-size: 14px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.input-panel, .output-panel { min-width: 0; }
+.report-preview { overflow-x: auto; overflow-wrap: anywhere; }
+button { min-height: 44px; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+textarea { font-size: 16px; caret-color: var(--accent); }
+::selection { background: var(--accent-soft); color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+::selection { background: #d8defa; color: #212741; }
+textarea, input { caret-color: #405aca; }
+button { transition: background-color 160ms ease-out, box-shadow 160ms ease-out; }
+button:active { transform: translateY(1px); }

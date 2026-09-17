@@ -11,28 +11,24 @@
       <section class="workspace" aria-labelledby="app-title">
         <header class="topbar">
           <div>
-            <p class="eyebrow">Safe Demo Local App</p>
-            <h1 id="app-title">E-commerce Market Research Agent</h1>
+
+            <h1 id="app-title">E-commerce Market Research Agent</h1><p class="intro">Turn your product question into a research draft.</p>
           </div>
-          <div class="status-strip" aria-label="Safety status">
-            <span>Local only</span>
-            <span>Fictional data</span>
-            <span>Manual review</span>
-          </div>
+          <p class="field-help">Offline template demo</p>
         </header>
 
         <div class="layout-grid">
           <form class="input-panel" id="agent-form">
             <div class="panel-header">
               <h2>Research Inputs</h2>
-              <button class="secondary-button" type="button" id="load-sample">Load sample</button>
+              <button class="secondary-button" type="button" id="load-sample">Load sample</button><button class="secondary-button" type="button" id="undo-sample" hidden>Undo sample</button>
             </div>
 
             <label for="brief">Product brief</label>
-            <textarea id="brief" name="brief" spellcheck="false"></textarea>
+            <textarea id="brief" name="brief" required maxlength="30000" placeholder="Describe the product, audience, market and question you want to investigate." spellcheck="false"></textarea>
 
             <label for="competitors">Fictional competitor CSV</label>
-            <textarea id="competitors" name="competitors" spellcheck="false"></textarea>
+            <details class="field-help"><summary>CSV format</summary><p id="csv-help">Columns: brand, price_usd, channel, positioning_claim, key_feature, content_hook, evidence_level, notes. Load sample for the format.</p></details><textarea id="competitors" name="competitors" required maxlength="100000" aria-describedby="csv-help" spellcheck="false"></textarea>
 
             <div class="actions">
               <button class="primary-button" type="submit">Generate report</button>
@@ -47,7 +43,7 @@
               <p id="status" role="status">Ready</p>
             </div>
             <article id="report-preview" class="report-preview">
-              <p class="empty-state">Load the fictional sample or paste your own anonymized demo inputs, then generate a report.</p>
+              <p class="empty-state">Add your brief and competitor notes to begin.</p>
             </article>
           </section>
         </div>

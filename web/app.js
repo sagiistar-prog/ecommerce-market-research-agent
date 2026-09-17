@@ -130,68 +130,95 @@ function renderMarkdown(markdown) {
   return html.join("");
 }
 
+
+let busy = false;
+let inputVersion = 0;
+let resultVersion = -1;
+let previousInput = null;
+const submitButton = form.querySelector('[type="submit"]');
+const undoButton = document.querySelector('#undo-sample');
+
+function syncControls() {
+  submitButton.disabled = busy;
+  loadSampleButton.disabled = busy;
+  copyButton.disabled = busy || !latestReport || resultVersion !== inputVersion;
+  downloadButton.disabled = copyButton.disabled;
+  form.setAttribute('aria-busy', String(busy));
+  submitButton.textContent = busy ? 'Generating report…' : 'Generate report';
+}
+
+async function request(url, options = {}) {
+  const response = await fetch(url, { ...options, signal: AbortSignal.timeout(30000) });
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || 'Unable to complete the request.');
+  return payload;
+}
+
 async function loadSample() {
-  setStatus("Loading sample");
-  const response = await fetch("/api/sample");
-  const sample = await response.json();
-  briefInput.value = sample.brief || "";
-  competitorsInput.value = sample.competitors || "";
-  setStatus("Sample loaded");
+  if (busy) return;
+  const startedAt = inputVersion;
+  busy = true; syncControls(); setStatus('Loading fictional sample…');
+  try {
+    const sample = await request('/api/sample');
+    if (inputVersion !== startedAt) { setStatus('Your edits were kept. Load the sample again when ready.'); return; }
+    previousInput = { brief: briefInput.value, competitors: competitorsInput.value };
+    briefInput.value = sample.brief || '';
+    competitorsInput.value = sample.competitors || '';
+    inputVersion += 1; undoButton.hidden = false;
+    setStatus('Fictional sample loaded. You can undo this replacement.');
+  } catch { setStatus('Sample could not be loaded. Your input is unchanged; try again.'); }
+  finally { busy = false; syncControls(); }
 }
 
 async function generateReport(event) {
   event.preventDefault();
-  setStatus("Generating");
-  reportPreview.innerHTML = '<p class="empty-state">Generating report...</p>';
-
-  const response = await fetch("/api/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      brief: briefInput.value,
-      competitors: competitorsInput.value,
-    }),
-  });
-
-  const payload = await response.json();
-  if (!response.ok) {
-    latestReport = "";
-    reportPreview.innerHTML = `<p class="error">${escapeHtml(payload.error || "Unable to generate report.")}</p>`;
-    setStatus("Needs input review");
-    return;
-  }
-
-  latestReport = payload.report || "";
-  reportPreview.innerHTML = renderMarkdown(latestReport);
-  setStatus("Report ready");
+  if (busy) return;
+  const version = inputVersion;
+  const snapshot = { brief: briefInput.value, competitors: competitorsInput.value };
+  if (!snapshot.brief.trim() || !snapshot.competitors.trim()) { setStatus('Add a product brief and competitor CSV before generating.'); return; }
+  busy = true; syncControls(); setStatus('Generating from your submitted inputs…');
+  try {
+    const payload = await request('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(snapshot) });
+    if (typeof payload.report !== 'string' || !payload.report.trim()) throw new Error('The report was empty. Please try again.');
+    latestReport = payload.report;
+    resultVersion = version;
+    reportPreview.innerHTML = renderMarkdown(latestReport);
+    setStatus(version === inputVersion ? 'Report ready. Review the evidence before exporting.' : 'Inputs changed during generation. Generate again to export the updated report.');
+  } catch (error) {
+    setStatus(error.name === 'TypeError' || error.name === 'TimeoutError' ? 'Connection interrupted. Your inputs and previous report are preserved. Try again.' : error.message);
+  } finally { busy = false; syncControls(); }
 }
 
 async function copyReport() {
-  if (!latestReport) {
-    setStatus("No report to copy");
-    return;
-  }
-  await navigator.clipboard.writeText(latestReport);
-  setStatus("Copied");
+  if (copyButton.disabled) return;
+  try { await navigator.clipboard.writeText(latestReport); setStatus('Report copied.'); }
+  catch { setStatus('Clipboard access was denied. Use Download to keep your report.'); }
 }
 
 function downloadReport() {
-  if (!latestReport) {
-    setStatus("No report to download");
-    return;
-  }
-  const blob = new Blob([latestReport], { type: "text/markdown;charset=utf-8" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "generated_market_report.md";
-  link.click();
-  URL.revokeObjectURL(link.href);
-  setStatus("Downloaded");
+  if (downloadButton.disabled) return;
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(new Blob([latestReport], { type: 'text/markdown;charset=utf-8' }));
+  link.download = 'market-research-demo.md'; link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+  setStatus('Report downloaded.');
 }
 
-loadSampleButton.addEventListener("click", loadSample);
-form.addEventListener("submit", generateReport);
-copyButton.addEventListener("click", copyReport);
-downloadButton.addEventListener("click", downloadReport);
-
-loadSample().catch(() => setStatus("Sample unavailable"));
+for (const input of [briefInput, competitorsInput]) input.addEventListener('input', () => {
+  inputVersion += 1; syncControls();
+  if (latestReport) setStatus('Inputs changed. Generate again to update the report.');
+});
+undoButton.addEventListener('click', () => {
+  if (!previousInput || busy) return;
+  briefInput.value = previousInput.brief; competitorsInput.value = previousInput.competitors;
+  inputVersion += 1; previousInput = null; undoButton.hidden = true;
+  setStatus('Previous inputs restored.'); syncControls();
+});
+form.addEventListener('keydown', event => {
+  if (event.key === 'Enter' && (event.ctrlKey || event.metaKey) && !event.isComposing) { event.preventDefault(); form.requestSubmit(); }
+});
+loadSampleButton.addEventListener('click', loadSample);
+form.addEventListener('submit', generateReport);
+copyButton.addEventListener('click', copyReport);
+downloadButton.addEventListener('click', downloadReport);
+syncControls();

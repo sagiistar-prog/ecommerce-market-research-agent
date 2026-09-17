@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Market Research Desk input",
+  "type": "object",
+  "properties": {
+    "brief": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30000
+    },
+    "competitors_csv": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100000
+    }
+  },
+  "required": [
+    "brief",
+    "competitors_csv"
+  ],
+  "additionalProperties": false
+}

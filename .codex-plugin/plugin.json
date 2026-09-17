@@ -1,0 +1,26 @@
+{
+  "name": "ecommerce-market-research-agent",
+  "version": "0.2.0",
+  "description": "将产品简述与竞品表整理成证据分级研究草稿",
+  "author": {
+    "name": "Oscar Qi",
+    "url": "https://github.com/sagiistar-prog"
+  },
+  "repository": "https://github.com/sagiistar-prog/ecommerce-market-research-agent",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Market Research Desk",
+    "shortDescription": "将产品简述与竞品表整理成证据分级研究草稿",
+    "longDescription": "将产品简述与竞品表整理成证据分级研究草稿。离线模板不会抓取或核验真实市场数据。输入样本、推断和建议需要分别复核，不是商业效果证明。",
+    "developerName": "Oscar Qi",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "将产品简述与竞品表整理成证据分级研究草稿，先使用仓库内的虚构样例。"
+    ]
+  }
+}

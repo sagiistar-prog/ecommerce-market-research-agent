@@ -76,7 +76,24 @@ def parse_product_brief(path: Path) -> dict[str, str]:
 
 
 def load_competitors_text(text: str) -> list[dict[str, str]]:
-    rows = list(csv.DictReader(StringIO(text)))
+    reader = csv.DictReader(StringIO(text.lstrip("\ufeff")))
+    required = {"brand", "price_usd", "channel", "positioning_claim", "key_feature", "content_hook", "evidence_level", "notes"}
+    missing = required - set(reader.fieldnames or [])
+    if missing:
+        raise ValueError("Missing competitor CSV columns: " + ", ".join(sorted(missing)))
+    rows = list(reader)
+    for number, row in enumerate(rows, start=2):
+        if None in row or any(value is None for value in row.values()):
+            raise ValueError(f"CSV row {number}: column count does not match header")
+        if not row.get("brand", "").strip():
+            raise ValueError(f"CSV row {number}: brand is required")
+        if row.get("price_usd", "").strip():
+            try:
+                price = float(row["price_usd"])
+                if not 0 <= price < 1e9:
+                    raise ValueError()
+            except ValueError:
+                raise ValueError(f"CSV row {number}: price_usd must be a finite non-negative number") from None
     if not rows:
         raise ValueError("No competitor rows found in CSV text")
     return rows

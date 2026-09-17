@@ -1,4 +1,23 @@
-# E-commerce Market Research Agent
+# Market Research Desk
+
+
+[产品案例与指标](docs/product-case.md) | [能力证据](docs/capability-evidence.json) | [验收与边界](docs/validation.md)
+
+## 面试官 30 秒版
+
+将产品简述与竞品表整理成证据分级研究草稿。先验证输入列，再生成报告。报告绑定提交时的输入版本，修改输入后提示重新生成，避免导出过期结论。
+
+当前可验证能力：**offline_template**。离线模板不会抓取或核验真实市场数据。 输入样本、推断和建议需要分别复核，不是商业效果证明。
+
+[插件使用与产品取舍](docs/plugin.md) · [输入示例](examples/plugin-input.json) · [输入契约](schemas/input.schema.json) · [维护记录](CHANGELOG.md)
+
+```bash
+python -m pip install -r requirements-plugin.txt
+python scripts/plugin_run.py --input examples/plugin-input.json
+```
+
+## 原有工作流与详细说明
+
 
 ## Interviewer 30-Second Version
 
