@@ -13,6 +13,19 @@ jobs:
       - run: python scripts/plugin_run.py --input examples/plugin-input.json
       - run: python scripts/plugin_run.py --input examples/commuter-mug-input.json --output-dir output/ci-mug
       - run: python scripts/validate_decisions.py --analysis output/ci-mug/result.json --decisions examples/commuter-mug-decisions.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:review
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hypothesis-review-acceptance
+          path: output/browser-review-*/
+          if-no-files-found: ignore
   portfolio:
     runs-on: windows-latest
     steps:

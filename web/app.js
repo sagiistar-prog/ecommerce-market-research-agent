@@ -9,6 +9,7 @@ const downloadButton = document.querySelector("#download-report");
 
 let latestReport = "";
 let latestAnalysis = null;
+let latestDecisions = null, currentReview = null, reviewUndo = null, reviewDrafts = {};
 let currentView = 'summary';
 const dataButton = document.querySelector('#download-data');
 const importButton = document.querySelector('#import-csv');
@@ -79,6 +80,8 @@ function renderReview() {
       const detail = element('details'); detail.append(element('summary', 'What counts as completion'), element('p', item.success_signal));
       section.append(detail, refs(item.evidence_ids)); reportPreview.append(section);
     }
+  } else if (currentView === 'hypotheses') {
+    renderHypotheses();
   } else {
     reportPreview.append(element('h3', 'Inspect the submitted evidence'), element('p', 'These are input records. Source links and evidence levels have not been verified.', 'field-help'));
     for (const item of a.evidence) {
@@ -139,6 +142,7 @@ function syncControls() {
   staleNotice.hidden = !latestAnalysis || resultVersion === inputVersion;
   form.setAttribute('aria-busy', String(busy));
   submitButton.textContent = busy ? 'Analyzing observations…' : 'Analyze observations';
+  for (const control of document.querySelectorAll('[data-review-control]')) control.disabled = busy || resultVersion !== inputVersion;
 }
 
 async function request(url, options = {}) {
@@ -177,6 +181,7 @@ async function generateReport(event) {
     if (!payload.analysis?.evidence?.length) throw new Error('Analysis is missing. Check the local server version.');
     latestReport = payload.report;
     latestAnalysis = payload.analysis;
+    latestDecisions = null; currentReview = null; reviewUndo = null; reviewDrafts = {};
     currentView = 'summary';
     resultVersion = version;
     renderReview();
@@ -219,4 +224,107 @@ loadSampleButton.addEventListener('click', loadSample);
 form.addEventListener('submit', generateReport);
 copyButton.addEventListener('click', copyReport);
 downloadButton.addEventListener('click', downloadReport);
+
+const hypothesisFile = document.querySelector('#hypothesis-file');
+const choices = {unreviewed:'Not reviewed',test:'Plan a test',defer:'Defer',reject:'Reject'};
+function reviewButton(label, action, className='secondary-button') {
+  const button=element('button',label,className);button.type='button';button.dataset.reviewControl='';
+  button.disabled=busy||resultVersion!==inputVersion;button.addEventListener('click',action);return button;
+}
+function downloadFile(name,content,type) {
+  const anchor=document.createElement('a');anchor.href=URL.createObjectURL(new Blob([content],{type}));
+  anchor.download=name;anchor.click();setTimeout(()=>URL.revokeObjectURL(anchor.href),1000);
+}
+function renderHypotheses() {
+  reportPreview.append(element('h3','Decide what deserves a test'));
+  const actions=element('div',null,'review-actions');
+  actions.append(reviewButton('Import hypotheses or review',()=>hypothesisFile.click()));
+  if(!latestDecisions) {
+    reportPreview.append(element('p','Import your AI assistant’s hypothesis JSON for these inputs, or try the fictional pet-bowl example.','field-help'));
+    actions.append(reviewButton('Try sample hypotheses',()=>importHypotheses(()=>request('/api/sample-decisions'))));
+    reportPreview.append(actions);return;
+  }
+  actions.append(reviewButton('Download review',()=>exportHypotheses('json')),reviewButton('Download review notes',()=>exportHypotheses('markdown')));
+  if(reviewUndo)actions.append(reviewButton('Undo last choice',()=>{
+    currentReview=structuredClone(reviewUndo);reviewUndo=null;reviewDrafts={};renderReview();reportPreview.focus();setStatus('Previous review choices restored.');
+  }));
+  reportPreview.append(actions);
+  const reviewed=currentReview.entries.filter(row=>row.choice!=='unreviewed').length;
+  reportPreview.append(element('p',`${reviewed} of ${currentReview.entries.length} reviewed. Choices are research plans, not measured outcomes.`,'field-help'));
+  latestDecisions.proposals.forEach((proposal,index)=>{
+    const row=currentReview.entries[index], id=row.proposal_id;
+    const section=element('section',null,'hypothesis');section.id='hypothesis-'+id;
+    section.append(element('h4',proposal.title),element('p',proposal.problem_statement),element('p',proposal.proposed_change));
+    const context=element('details');context.append(element('summary','User, assumptions and proposed test'));
+    context.append(element('p',proposal.target_user),element('p',proposal.reasoning));
+    const assumptions=element('ul');for(const value of proposal.assumptions)assumptions.append(element('li',value));context.append(assumptions);
+    const details=element('dl');for(const [key,value] of Object.entries(proposal.validation))details.append(element('dt',key.replaceAll('_',' ')),element('dd',value));context.append(details);section.append(context);
+    const citations=element('details');citations.append(element('summary',`Check ${proposal.evidence.length} citations`));
+    for(const ref of proposal.evidence){
+      const quote=element('blockquote',ref.quote);citations.append(quote);
+      const source=reviewButton(`${ref.id} / ${ref.field.replaceAll('_',' ')}`,()=>{
+        const original=ref.id==='BRIEF'?latestAnalysis.original_brief:latestAnalysis.evidence.find(item=>item.id===ref.id)?.[ref.field];
+        const preview=quote.nextElementSibling;preview.hidden=!preview.hidden;
+        preview.replaceChildren(element('p',original,'source-original'));if(!preview.hidden){preview.tabIndex=-1;preview.focus();}
+      });
+      const full=element('div',null,'citation-original');full.hidden=true;
+      citations.append(full,source);
+    }
+    section.append(citations);
+    const form=element('form',null,'choice-form');form.dataset.proposalId=id;
+    const label=element('label','Your choice');label.htmlFor='choice-'+id;
+    const select=element('select');select.id='choice-'+id;select.dataset.reviewControl='';
+    for(const [value,title] of Object.entries(choices)){const option=element('option',title);option.value=value;select.append(option);}
+    const draft=reviewDrafts[id]||row;select.value=draft.choice;
+    const reasonLabel=element('label','Reason');reasonLabel.htmlFor='reason-'+id;
+    const reason=element('textarea');reason.id='reason-'+id;reason.rows=2;reason.maxLength=3000;reason.value=draft.reason;reason.dataset.reviewControl='';
+    const update=()=>{reason.setCustomValidity('');reason.required=select.value!=='unreviewed';reviewDrafts[id]={choice:select.value,reason:reason.value};};
+    select.addEventListener('change',update);reason.addEventListener('input',update);reason.required=select.value!=='unreviewed';
+    const save=reviewButton('Record choice',()=>{});save.type='submit';
+    form.addEventListener('submit',event=>{
+      event.preventDefault();if(busy||resultVersion!==inputVersion)return;
+      if(select.value!=='unreviewed'&&!reason.value.trim()){reason.setCustomValidity('Add a reason for this choice.');reason.reportValidity();return;}
+      reason.setCustomValidity('');reviewUndo=structuredClone(currentReview);
+      row.choice=select.value;row.reason=select.value==='unreviewed'?'':reason.value;delete reviewDrafts[id];
+      renderReview();document.querySelector(`#hypothesis-${id} select`).focus();setStatus(`${id}: ${choices[row.choice]}. Download the review to keep your choices.`);
+    });
+    reason.addEventListener('input',()=>reason.setCustomValidity(''));
+    form.append(label,select,reasonLabel,reason,save);section.append(element('p',`Recorded: ${choices[row.choice]}`,'recorded-choice'),form);reportPreview.append(section);
+  });
+  syncControls();
+}
+async function importHypotheses(load) {
+  if(busy||!latestAnalysis||resultVersion!==inputVersion)return;
+  const version=inputVersion;busy=true;syncControls();setStatus('Checking hypotheses and citations…');
+  try {
+    const data=await load();
+    if(!data||typeof data!=='object'||Array.isArray(data))throw Error('Import a hypothesis or review JSON object. Your previous review is unchanged.');
+    const restoring=data.kind==='market-hypothesis-review';
+    if(restoring&&data.analysis?.analysis_id!==latestAnalysis.analysis_id)throw Error('This review belongs to different inputs. Analyze the matching brief and CSV first.');
+    const decisions=restoring?data.decisions:data;
+    const body={analysis:latestAnalysis,decisions,...(restoring?{review:data.review}:{})};
+    const result=await request(restoring?'/api/review':'/api/decisions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(version!==inputVersion){setStatus('Inputs changed. Your previous review was kept; analyze again before importing.');return;}
+    latestDecisions=decisions;currentReview=restoring?result.package.review:result.review;reviewUndo=null;reviewDrafts={};
+    currentView='hypotheses';renderReview();reportPreview.focus();setStatus(restoring?'Review restored. No product outcome has been marked as validated.':'Citations checked. Review the hypotheses before choosing a next step.');
+  }catch(error){setStatus(error instanceof SyntaxError?'The JSON could not be read. Your previous review is unchanged.':error.message);}
+  finally{busy=false;syncControls();}
+}
+hypothesisFile.addEventListener('change',()=>{
+  const file=hypothesisFile.files[0];hypothesisFile.value='';if(!file)return;
+  importHypotheses(async()=>{if(file.size>2000000)throw Error('Keep the hypothesis or review file under 2 MB.');return JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(await file.arrayBuffer()));});
+});
+async function exportHypotheses(format) {
+  if(busy||!currentReview||resultVersion!==inputVersion)return;
+  if(Object.keys(reviewDrafts).length){setStatus('Record your edited choice before downloading the review.');return;}
+  const version=inputVersion;busy=true;syncControls();
+  try{
+    const result=await request('/api/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({analysis:latestAnalysis,decisions:latestDecisions,review:currentReview})});
+    if(version!==inputVersion){setStatus('Inputs changed. Analyze again before exporting.');return;}
+    if(format==='json')downloadFile('market-hypothesis-review.json',JSON.stringify(result.package,null,2),'application/json');
+    else downloadFile('market-hypothesis-review.md',result.markdown,'text/markdown;charset=utf-8');
+    setStatus('Review downloaded with its evidence and choices. Nothing was saved in the browser.');
+  }catch(error){setStatus('Review could not be exported. Your choices are kept. '+error.message);}
+  finally{busy=false;syncControls();}
+}
 syncControls();

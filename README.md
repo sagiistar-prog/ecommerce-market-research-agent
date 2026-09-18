@@ -2,9 +2,9 @@
 
 把产品问题和竞品观察整理成可核对的样本结论，再决定下一步验证什么。适合手头已有资料、需要评估新品方向的产品与品类人员。
 
-当前版本 0.3：本地分析器负责数据检查、价格分组和证据追溯；Skill 引导宿主 AI 根据具体品类形成产品假设。网页可独立离线使用，无需模型密钥。**不自动抓取网站，不把虚构样例当作市场事实。**
+当前版本 0.4：本地分析器负责数据检查、价格分组和证据追溯；Skill 引导宿主 AI 根据具体品类形成产品假设。网页可独立离线使用，无需模型密钥。**不自动抓取网站，不把虚构样例当作市场事实。**
 
-[产品取舍](docs/product-case.md) | [本轮验收](docs/evidence-review-acceptance.md) | [插件与数据格式](docs/plugin.md) | [维护记录](CHANGELOG.md)
+[产品取舍](docs/product-case.md) | [本轮验收](docs/hypothesis-review-acceptance.md) | [插件与数据格式](docs/plugin.md) | [维护记录](CHANGELOG.md)
 
 ## 下载后使用
 
@@ -23,7 +23,9 @@ python scripts/app_server.py --port 8765
 1. 写明品类、目标市场、用户假设和研究问题，支持中英文标签。纯文本会保留，并提示待补字段。
 2. 粘贴或导入竞品 CSV；也可以加载明确标注为虚构的示例。
 3. 查看样本结论与下一步任务，点击 E001 等编号核对原始记录。
-4. 导出 Markdown 或 JSON 证据。修改输入后旧结果停止导出，避免使用过期结论。
+4. 在 Hypotheses 导入宿主 AI 生成的 `decisions.json`，展开引用核对原始字段。首次体验可先 Load sample，再 Try sample hypotheses。
+5. 逐条选择 Plan a test、Defer 或 Reject，填写理由并 Record choice；默认保持 Not reviewed，可以撤销上一次记录。
+6. Download review 保存包含证据、假设和取舍的 JSON；Download review notes 导出阅读版。重开页面后，分析相同的简述与 CSV，再导入保存的 review JSON 恢复。修改输入后旧结果停止导出。
 
 输入只在本机请求中处理，网页服务不保存输入或请求正文，也不访问资料中的 URL。服务用于本机单人使用，不是已部署的多租户系统。
 
@@ -68,3 +70,5 @@ powershell -ExecutionPolicy Bypass -File scripts/portfolio_audit.ps1
 本地与 CI 验证覆盖数据边界、跨品类、引用完整性和 HTTP 接口。真实用户任务完成率、研究时间改善和业务收益尚未测量，试用计划见 [产品案例](docs/product-case.md)。
 
 开源依赖与贡献边界见 [docs/open-source.md](docs/open-source.md)。未宣称已发布插件商店或完成宿主 App 安装验收。
+
+网页不自动保存，关闭前请下载评审文件。评审选择表示下一步安排，不表示假设已获验证。浏览器技术验收运行 `npm ci`、`npx playwright install chromium`、`npm run test:review`，测试工具仅用于开发检查，普通使用不需要 Node.js。

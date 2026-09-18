@@ -1,5 +1,12 @@
 # Maintenance log
 
+## 0.4.0 — 2026-09-18
+
+- Added local hypothesis import, citation readback, explicit reviewer choices and reasons, undo, JSON restore and Markdown export.
+- Bound choices to the exact evidence and proposal snapshots; stale proposals and fabricated quotes fail validation.
+- Added browser task regression in CI at desktop and mobile widths. Safe Demo remains network-free; browser tooling is development-only.
+- No customer results or measured product outcomes are inferred from a completed review. [Acceptance](docs/hypothesis-review-acceptance.md).
+
 ## 0.3.0 — 2026-09-18
 
 - Replaced fixed desk-product advice with category-independent evidence analysis.

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from jsonschema import ValidationError
 from plugin_run import run
+from hypothesis_review import prepare_review, export_review
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -53,8 +54,9 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
 
     def read_json(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
-        if not 0 < length <= 1_000_000:
-            raise ValueError("Request body must contain 1 to 1000000 bytes")
+        limit=4_000_000 if self.path in {'/api/decisions','/api/review'} else 1_000_000
+        if not 0 < length <= limit:
+            raise ValueError(f"Request body must contain 1 to {limit} bytes")
         raw = self.rfile.read(length).decode("utf-8")
         parsed = json.loads(raw, parse_constant=lambda value: (_ for _ in ()).throw(ValueError("JSON numbers must be finite")))
         if not isinstance(parsed, dict): raise ValueError("Request must be a JSON object")
@@ -71,12 +73,16 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
         if self.path == "/api/sample":
+            fixture=json.loads(load_text("examples/pet-bowl-input.json"))
             self.send_json(
                 {
-                    "brief": load_text("examples/sample_product_brief.md"),
-                    "competitors": load_text("examples/sample_competitor_table.csv"),
+                    "brief": fixture['brief'],
+                    "competitors": fixture['competitors_csv'],
                 }
             )
+            return
+        if self.path == "/api/sample-decisions":
+            self.send_json(json.loads(load_text("examples/pet-bowl-decisions.json")))
             return
         return super().do_GET()
 
@@ -86,12 +92,21 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
         if self.headers.get("Host") not in expected or (origin and origin not in {f"http://{h}" for h in expected}):
             self.send_json({"error": "Origin rejected"}, status=403)
             return
-        if self.path != "/api/generate":
+        if self.path not in {"/api/generate", "/api/decisions", "/api/review"}:
             self.send_error(HTTPStatus.NOT_FOUND, "Unknown endpoint")
             return
 
         try:
             payload = self.read_json()
+            if self.path in {"/api/decisions", "/api/review"}:
+                allowed={"analysis","decisions"} | ({"review"} if self.path=="/api/review" else set())
+                if set(payload)!=allowed:
+                    raise ValueError('Provide the current analysis and hypothesis package, with review choices when exporting.')
+                if self.path=="/api/decisions":
+                    self.send_json({'review':prepare_review(payload['analysis'],payload['decisions'])})
+                else:
+                    self.send_json(export_review(payload['analysis'],payload['decisions'],payload['review']))
+                return
             if set(payload) - {"brief", "competitors"}:
                 raise ValueError("Only brief and competitors fields are accepted")
             result = run({"brief": payload.get("brief"), "competitors_csv": payload.get("competitors")})["result"]

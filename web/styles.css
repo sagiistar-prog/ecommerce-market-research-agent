@@ -355,5 +355,20 @@ dd { margin: 0; font-variant-numeric: tabular-nums; }
 a { color: var(--accent-dark); text-underline-offset: 3px; }
 textarea::placeholder { color: var(--muted); opacity: 1; }
 .report-preview, textarea { scrollbar-color: var(--line) var(--surface); }
+.review-actions { display:flex;flex-wrap:wrap;gap:8px;margin-block:16px; }
+.hypothesis { border-top:1px solid var(--line);padding-block:24px; }
+.hypothesis h4 { margin:0 0 12px;font-size:18px;line-height:1.45; }
+.hypothesis p,.hypothesis li { max-width:70ch; }
+.hypothesis details { margin-block:12px; }
+.hypothesis dl { display:grid;gap:8px;margin-block:12px; }
+.hypothesis dd { margin-bottom:12px; }
+.hypothesis blockquote { margin:12px 0;white-space:pre-wrap; }
+.source-original { white-space:pre-wrap; }
+.citation-original { padding:12px;background:var(--surface-muted); }
+.choice-form { display:grid;gap:8px;margin-top:16px; }
+.choice-form select { min-height:44px;padding:10px;border:1px solid var(--line);border-radius:8px;font:inherit;color:var(--ink);background:var(--surface); }
+.choice-form select:focus-visible { outline:3px solid var(--accent);outline-offset:3px; }
+.choice-form button { justify-self:start; }
+.recorded-choice { font-size:14px;color:var(--muted);margin:16px 0 0; }
 @media (min-width: 981px) { .output-panel { max-height: calc(100vh - 146px); position: sticky; top: 20px; } .report-preview { min-height: 0; } }
 @media (max-width: 560px) { .input-tools .secondary-button { width: auto; } .result-nav button { flex: 1; } #status { text-align: left; } .export-actions { flex-direction: column; align-items: stretch; } }

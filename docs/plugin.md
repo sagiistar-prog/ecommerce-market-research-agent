@@ -1,4 +1,4 @@
-# Market Research Desk 0.3
+# Market Research Desk 0.4
 
 本地证据分析与宿主 AI 产品判断分工。脚本不访问网络或调用模型，网页可以独立复核资料。
 
@@ -42,3 +42,13 @@ python scripts/validate_decisions.py --analysis output/pet-review/result.json --
 成功结果为 `scope: reference_validation_only`。它不判断引文是否相关、推断是否合理、样本是否有代表性，专业声明仍须审查。[宠物碗虚构例子](../examples/pet-bowl-decisions.json) 演示从观察到可证伪产品方案。
 
 仓库就是插件根目录，不修改个人插件市场。验证包括清单、Skill、CLI、Schema 和本机浏览器，不包括商店发布或宿主 App 安装。网页是本机单人服务，不提供账户隔离、生产持久化或外部采集服务。
+
+## 人工评审与恢复
+
+网页分析完成后，在 Hypotheses 导入同一快照对应的 `decisions.json`。本地 `POST /api/decisions` 接受恰好两个字段 `analysis` 和 `decisions`，重新核对引用并初始化未评审条目。每条用户选择对应 `P001` 等编号，结构见 [review.schema.json](../schemas/review.schema.json)。
+
+`POST /api/review` 接受恰好三个字段 `analysis`、`decisions`、`review`，返回 `package` 和 `markdown`。非未评审选择必须有非空理由；未评审条目理由为空。每条建议必须恰好出现一次。`decisions_id` 对完整假设包计算 SHA-256，包括内容与顺序；变化后旧选择不能复用。摘要计数由服务端重新计算，不信任上传的计数。
+
+下载包类型为 `market-hypothesis-review`、版本 `1.0`，包含完整证据、假设、选择和计数。`review_status: complete` 仅表示所有假设已被评审；即使全部选了 Plan a test，`validation_status` 仍为 `not_measured`。它不记录实验结果，也不验证评审者身份；哈希不是签名或防伪证明。
+
+恢复前先用同一简述和 CSV 分析，再导入保存的 review JSON。失败保留旧评审；未记录的草稿阻止导出。文件导入上限为 2 MB，评审接口请求上限为 4 MB。没有后台数据库、自动保存或多人合并。JSON 保留完整结构，Markdown 用于阅读而非再次导入。

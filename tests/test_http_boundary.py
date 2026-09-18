@@ -25,9 +25,9 @@ class LocalHttpBoundary(unittest.TestCase):
         self.assertEqual(self.request({'Content-Length':'-1'}),400)
         self.assertEqual(self.request({'Content-Length':'1000001'}),400)
 
-    def post_json(self, payload):
+    def post_json(self, payload, path='/api/generate'):
         connection = http.client.HTTPConnection('127.0.0.1', self.server.server_port, timeout=4)
-        connection.request('POST', '/api/generate', body=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
+        connection.request('POST', path, body=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
         response = connection.getresponse()
         result = response.status, json.loads(response.read())
         connection.close()
@@ -46,3 +46,22 @@ class LocalHttpBoundary(unittest.TestCase):
             status, result = self.post_json(payload)
             self.assertEqual(status, 400)
             self.assertIn('error', result)
+
+    def test_hypothesis_import_and_review_export_use_real_reference_validation(self):
+        from plugin_run import run
+        root=Path(__file__).resolve().parents[1]
+        fixture=json.loads((root/'examples/pet-bowl-input.json').read_text(encoding='utf-8'))
+        analysis=run(fixture)['result']['analysis']
+        decisions=json.loads((root/'examples/pet-bowl-decisions.json').read_text(encoding='utf-8'))
+        body={'analysis':analysis,'decisions':decisions}
+        status,result=self.post_json(body,'/api/decisions');self.assertEqual(status,200)
+        body['review']=result['review'];body['review']['entries'][0].update(choice='reject',reason='Fictional review: the evidence is insufficient.')
+        status,result=self.post_json(body,'/api/review');self.assertEqual(status,200)
+        self.assertEqual(result['package']['summary']['choices']['reject'],1)
+        body['decisions']['proposals'][0]['proposed_change']='Changed proposal'
+        status,result=self.post_json(body,'/api/review');self.assertEqual(status,400)
+        self.assertIn('changed',result['error'])
+
+    def test_invalid_hypothesis_shape_returns_a_recoverable_client_error(self):
+        for body in ({'analysis':None,'decisions':{}},{'analysis':{},'decisions':[]},{'analysis':{},'decisions':{},'unexpected':True}):
+            status,_=self.post_json(body,'/api/decisions');self.assertEqual(status,400)

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["decisions_id", "entries"],
+  "additionalProperties": false,
+  "properties": {
+    "decisions_id": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "entries": {
+      "type": "array", "minItems": 1, "maxItems": 10,
+      "items": {
+        "type": "object", "required": ["proposal_id", "choice", "reason"], "additionalProperties": false,
+        "properties": {
+          "proposal_id": {"type": "string", "pattern": "^P[0-9]{3}$"},
+          "choice": {"enum": ["unreviewed", "test", "defer", "reject"]},
+          "reason": {"type": "string", "maxLength": 3000}
+        },
+        "allOf": [{"if": {"properties": {"choice": {"const": "unreviewed"}}},
+          "then": {"properties": {"reason": {"const": ""}}},
+          "else": {"properties": {"reason": {"minLength": 1, "pattern": "\\S"}}}}]
+      }
+    }
+  }
+}

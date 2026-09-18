@@ -28,3 +28,5 @@ output/
 .impeccable/
 
 test-results/
+
+node_modules/

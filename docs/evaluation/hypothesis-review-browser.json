@@ -1,0 +1,43 @@
+{
+  "scope": "Fictional developer tasks, not user effectiveness",
+  "reports": [
+    {
+      "width": 1440,
+      "sample_import": true,
+      "cross_category": true,
+      "explicit_choice": true,
+      "required_reason": true,
+      "draft_navigation": true,
+      "undo": true,
+      "source_readback": true,
+      "json_and_markdown_exports": true,
+      "stale_proposal_rejected": true,
+      "false_quote_rejected": true,
+      "restore_after_reload": true,
+      "changed_input_blocks_export": true,
+      "no_persistence": true,
+      "axe_violations": 0,
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "width": 390,
+      "sample_import": true,
+      "cross_category": true,
+      "explicit_choice": true,
+      "required_reason": true,
+      "draft_navigation": true,
+      "undo": true,
+      "source_readback": true,
+      "json_and_markdown_exports": true,
+      "stale_proposal_rejected": true,
+      "false_quote_rejected": true,
+      "restore_after_reload": true,
+      "changed_input_blocks_export": true,
+      "no_persistence": true,
+      "axe_violations": 0,
+      "overflow": false,
+      "page_errors": []
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "name": "market-research-desk-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {"test:review": "node tests/browser-review.mjs"},
+  "devDependencies": {"playwright": "1.63.0", "@axe-core/playwright": "4.13.0"}
+}

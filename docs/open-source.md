@@ -16,3 +16,7 @@
 依赖的实际版本以锁文件/requirements为准。选择依据是维护方式、许可证、接口清晰度、可测试性、部署成本与任务匹配，不仅是star数量。更新依赖先在独立分支运行构建、契约和关键任务测试，再升级。
 
 原始参考图用于理解留白、蓝紫灰、光影和状态反馈，没有复制其图片、Logo或商业素材。Impeccable用于审查布局、交互与可访问性；技术注释与产品取舍留在文档中，产品界面不堆砌说明。
+
+## 0.4 开发验收依赖
+
+实际采用 [Playwright](https://github.com/microsoft/playwright) 与 [axe-core Playwright](https://github.com/dequelabs/axe-core-npm) 进行本机浏览器任务、下载恢复及自动无障碍检查，版本锁定在 `package-lock.json`。二者只用于开发和CI，不进入Python Safe Demo或用户的资料分析链路。选择依据是可复现的浏览器驱动和可检查的规则，不以star数声称产品质量。现有页面仍用原生HTML控件，不引入无需使用的运行时组件库。

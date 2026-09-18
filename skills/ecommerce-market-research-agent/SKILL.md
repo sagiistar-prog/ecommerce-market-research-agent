@@ -48,3 +48,9 @@ python scripts/validate_decisions.py --analysis output/new-review/result.json --
 The validator rejects stale snapshots, nonexistent IDs and quotes absent from cited fields. It proves reference integrity only; assess relevance, representativeness, contradictory evidence and reasoning yourself. `examples/pet-bowl-decisions.json` illustrates the format, not a stock answer for another category.
 
 Present the decision, evidence, assumptions and next test concisely in the user's language. Link saved artifacts when requested. Do not claim live research, measured customer value or automatic model evaluation from local checks.
+
+## Hand the hypotheses to the reviewer
+
+After validating `decisions.json`, explain how to import it in the local app's Hypotheses view after analyzing the matching brief and CSV. The user records Plan a test, Defer or Reject with a reason; leave proposals unreviewed until they choose. Do not manufacture reviewer choices or measured outcomes.
+
+A downloaded review JSON includes the evidence and proposal snapshots, choices and reasons. To resume, analyze the same inputs and import that review file. Changed proposals invalidate old choices. Markdown notes are for reading, not round-trip import. The app does not automatically save; ask the user to download their review before closing. `validation_status: not_measured` remains true after a completed review.

@@ -9,5 +9,8 @@
   "upstream_credit": "docs/open-source.md",
   "evidence_engine": "scripts/evidence_analysis.py",
   "hypothesis_validation": "scripts/validate_decisions.py",
-  "current_acceptance": "docs/evidence-review-acceptance.md"
+  "current_acceptance": "docs/hypothesis-review-acceptance.md",
+  "hypothesis_review": "scripts/hypothesis_review.py",
+  "review_contract": "schemas/review.schema.json",
+  "browser_tasks": "tests/browser-review.mjs"
 }
