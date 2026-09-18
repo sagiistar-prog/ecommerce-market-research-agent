@@ -52,11 +52,12 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
 
     def read_json(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
-        if length <= 0:
-            return {}
+        if not 0 < length <= 1_000_000:
+            raise ValueError("Request body must contain 1 to 1000000 bytes")
         raw = self.rfile.read(length).decode("utf-8")
         parsed = json.loads(raw)
-        return parsed if isinstance(parsed, dict) else {}
+        if not isinstance(parsed, dict): raise ValueError("Request must be a JSON object")
+        return parsed
 
     def do_GET(self) -> None:  # noqa: N802 - inherited API name
         if self.path == "/api/sample":
@@ -70,6 +71,11 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
         return super().do_GET()
 
     def do_POST(self) -> None:  # noqa: N802 - inherited API name
+        expected = {f"127.0.0.1:{self.server.server_port}", f"localhost:{self.server.server_port}"}
+        origin = self.headers.get("Origin")
+        if self.headers.get("Host") not in expected or (origin and origin not in {f"http://{h}" for h in expected}):
+            self.send_json({"error": "Origin rejected"}, status=403)
+            return
         if self.path != "/api/generate":
             self.send_error(HTTPStatus.NOT_FOUND, "Unknown endpoint")
             return
