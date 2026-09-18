@@ -11,7 +11,8 @@ from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-import generate_market_report as report_generator
+from jsonschema import ValidationError
+from plugin_run import run
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -55,11 +56,20 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
         if not 0 < length <= 1_000_000:
             raise ValueError("Request body must contain 1 to 1000000 bytes")
         raw = self.rfile.read(length).decode("utf-8")
-        parsed = json.loads(raw)
+        parsed = json.loads(raw, parse_constant=lambda value: (_ for _ in ()).throw(ValueError("JSON numbers must be finite")))
         if not isinstance(parsed, dict): raise ValueError("Request must be a JSON object")
         return parsed
 
     def do_GET(self) -> None:  # noqa: N802 - inherited API name
+        if self.path == "/api/sample-csv":
+            body = load_text("examples/sample_competitor_table.csv").encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/csv; charset=utf-8")
+            self.send_header("Content-Disposition", 'attachment; filename="competitor-template.csv"')
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if self.path == "/api/sample":
             self.send_json(
                 {
@@ -82,33 +92,17 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
 
         try:
             payload = self.read_json()
-            brief_text = str(payload.get("brief", "")).strip()
-            competitor_csv = str(payload.get("competitors", "")).strip()
-            if not brief_text or not competitor_csv:
-                self.send_json(
-                    {"error": "Product brief and competitor CSV are required."},
-                    HTTPStatus.BAD_REQUEST,
-                )
-                return
-
-            rules = report_generator.load_config(PROJECT_ROOT / "configs/research_rules.yaml")
-            source_policy = report_generator.load_config(PROJECT_ROOT / "configs/source_policy.yaml")
-            preferences = report_generator.load_config(PROJECT_ROOT / "configs/user_preferences.yaml")
-            brief = report_generator.parse_product_brief_text(brief_text)
-            competitors = report_generator.load_competitors_text(competitor_csv)
-            markdown = report_generator.build_report(
-                brief=brief,
-                competitors=competitors,
-                rules=rules,
-                source_policy=source_policy,
-                preferences=preferences,
-                input_path=Path("web-ui/product_brief.md"),
-                competitor_path=Path("web-ui/competitor_table.csv"),
-                dry_run=True,
-            )
-            self.send_json({"report": markdown})
-        except Exception as exc:  # pragma: no cover - surfaced to local UI
+            if set(payload) - {"brief", "competitors"}:
+                raise ValueError("Only brief and competitors fields are accepted")
+            result = run({"brief": payload.get("brief"), "competitors_csv": payload.get("competitors")})["result"]
+            self.send_json({"report": result["markdown"], "analysis": result["analysis"]})
+        except ValidationError as exc:
+            field = ".".join(str(part) for part in exc.absolute_path) or "input"
+            self.send_json({"error": f"Check {field}: expected text within the documented length limit."}, HTTPStatus.BAD_REQUEST)
+        except (ValueError, UnicodeError) as exc:
             self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+        except Exception:
+            self.send_json({"error": "Analysis failed. Your inputs are preserved; check the local server installation."}, HTTPStatus.INTERNAL_SERVER_ERROR)
 
 
 def parse_args() -> argparse.Namespace:

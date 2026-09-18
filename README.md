@@ -1,179 +1,70 @@
 # Market Research Desk
 
-[本轮技术验收](docs/technical-audit-2026-09-18.md)
+把产品问题和竞品观察整理成可核对的样本结论，再决定下一步验证什么。适合手头已有资料、需要评估新品方向的产品与品类人员。
 
-[产品案例与指标](docs/product-case.md) | [能力证据](docs/capability-evidence.json) | [验收与边界](docs/validation.md)
+当前版本 0.3：本地分析器负责数据检查、价格分组和证据追溯；Skill 引导宿主 AI 根据具体品类形成产品假设。网页可独立离线使用，无需模型密钥。**不自动抓取网站，不把虚构样例当作市场事实。**
 
-## 面试官 30 秒版
+[产品取舍](docs/product-case.md) | [本轮验收](docs/evidence-review-acceptance.md) | [插件与数据格式](docs/plugin.md) | [维护记录](CHANGELOG.md)
 
-将产品简述与竞品表整理成证据分级研究草稿。先验证输入列，再生成报告。报告绑定提交时的输入版本，修改输入后提示重新生成，避免导出过期结论。
+## 下载后使用
 
-当前可验证能力：**offline_template**。离线模板不会抓取或核验真实市场数据。 输入样本、推断和建议需要分别复核，不是商业效果证明。
-
-[插件使用与产品取舍](docs/plugin.md) · [输入示例](examples/plugin-input.json) · [输入契约](schemas/input.schema.json) · [维护记录](CHANGELOG.md)
-
-```bash
-python -m pip install -r requirements-plugin.txt
-python scripts/plugin_run.py --input examples/plugin-input.json
-```
-
-## 原有工作流与详细说明
-
-
-## Interviewer 30-Second Version
-
-This is a Safe Demo of an AI market research agent for cross-border ecommerce and content growth. It turns a fictional product brief, fictional competitor table, evidence rules, source policy, and user preferences into a structured market research report.
-
-The project demonstrates AI product manager judgment: facts, inferences, and recommendations are separated; every output is tied to evidence levels; risky claims trigger manual review; and the demo contains no real commercial data.
-
-## What It Shows
-
-- Market research Agent workflow for early ecommerce category testing.
-- A local web app that lets users edit inputs and generate the report in a browser.
-- Content growth translation from research notes into channel angles and messaging pillars.
-- Evidence grading so demo facts, hypotheses, and recommendations are not mixed together.
-- Manual review gates for product claims, compliance assumptions, pricing, shipping, and public copy.
-- A Safe Demo that only reads local `examples/` and `configs/` files.
-- A portfolio audit that checks structure, secrets, local paths, demo safety, and business confidentiality.
-
-This public portfolio repository is intentionally generalized and does not include private business logic, client data, internal product strategy, or confidential information from any real project.
-
-## Product Value
-
-Cross-border ecommerce teams often need a fast but disciplined way to answer:
-
-- Which buyer segments should we test first?
-- Which competitor positions are crowded?
-- What price-band assumptions need validation?
-- Which content hooks can be tested without overclaiming?
-- What must a human review before public use?
-
-The agent standardizes that work into a repeatable workflow. It helps move from a rough product idea to an evidence-aware report that can support merchandising, creator briefs, landing pages, listing copy, and content tests.
-
-## Content Growth Value
-
-The output is not only a research summary. It turns research inputs into growth-ready assets:
-
-- Short-form content hooks by channel intent.
-- Benefit-led messaging pillars.
-- Persona-specific objections and responses.
-- Competitor matrix for positioning decisions.
-- Risk notes and manual review prompts for claims and evidence gaps.
-
-## Safe Demo
-
-Run the demo from the project root:
-
-```bash
-python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
-```
-
-Windows launcher alternative:
-
-```powershell
-py -3 scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
-```
-
-The command only reads local files under `examples/` and `configs/`. It does not scrape, fetch, or verify live market data.
-
-## Local Web App
-
-Run the browser UI from the project root:
-
-```powershell
-py -3 scripts/app_server.py --port 8765
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8765
-```
-
-The local app lets users:
-
-- Load the fictional sample brief and competitor CSV.
-- Edit anonymized demo inputs in the browser.
-- Generate the market research report without writing user input into tracked files.
-- Copy or download the generated Markdown report.
-
-The server only binds to the local machine and uses the same Safe Demo rules as the command-line workflow.
-
-## What The Agent Produces
-
-- Executive summary.
-- Target market hypothesis.
-- User segments.
-- Competitor matrix summary.
-- Price band observation.
-- Product positioning.
-- Content growth angles.
-- Channel strategy.
-- Risk notes.
-- Evidence level and manual review notes.
-
-## Governance Built In
-
-The repository includes configuration files and an audit script that make research quality and public-safety boundaries explicit:
-
-- `configs/research_rules.yaml` defines evidence levels, safe-demo boundaries, and manual review prompts.
-- `configs/source_policy.yaml` defines source priority without relying on private source bundles.
-- `configs/user_preferences.yaml` tunes the report for product manager and content growth review.
-- `scripts/portfolio_audit.ps1` checks required files, secret-like strings, local paths, safe-demo constraints, network-free implementation, and business confidentiality terms.
-
-Evidence levels are surfaced in the generated report so readers can distinguish demo fixtures, reviewed inputs, public references, corroborated evidence, and low-confidence hypotheses.
-
-## Repository Structure
-
-```text
-README.md
-AGENTS.md
-.gitignore
-requirements.txt
-LICENSE
-docs/case-study.md
-docs/workflow.md
-docs/research-framework.md
-docs/app-ui.md
-docs/source-policy.md
-docs/interview-summary.md
-docs/safe-demo.md
-skills/ecommerce-market-research-agent/SKILL.md
-scripts/generate_market_report.py
-scripts/app_server.py
-scripts/portfolio_audit.ps1
-configs/research_rules.yaml
-configs/source_policy.yaml
-configs/user_preferences.yaml
-examples/sample_product_brief.md
-examples/sample_competitor_table.csv
-examples/generated_market_report.md
-web/index.html
-web/styles.css
-web/app.js
-```
-
-## Install
+需要 Python 3.10 或更高版本。在仓库根目录运行：
 
 ```bash
 python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
+# Windows: .venv\Scripts\activate
+# macOS / Linux: source .venv/bin/activate
+python -m pip install -r requirements-plugin.txt
+python scripts/app_server.py --port 8765
 ```
 
-`PyYAML` is listed for normal YAML parsing. The demo configuration is JSON-compatible YAML, so the generator can also run with the Python standard library if `PyYAML` is not installed.
+打开终端显示的本地地址。端口被占用时会选择后续空闲端口。
 
-## Portfolio Audit
+1. 写明品类、目标市场、用户假设和研究问题，支持中英文标签。纯文本会保留，并提示待补字段。
+2. 粘贴或导入竞品 CSV；也可以加载明确标注为虚构的示例。
+3. 查看样本结论与下一步任务，点击 E001 等编号核对原始记录。
+4. 导出 Markdown 或 JSON 证据。修改输入后旧结果停止导出，避免使用过期结论。
 
-```powershell
+输入只在本机请求中处理，网页服务不保存输入或请求正文，也不访问资料中的 URL。服务用于本机单人使用，不是已部署的多租户系统。
+
+## AI 插件流程
+
+仓库根目录包含 `.codex-plugin/plugin.json`。宿主负责模型推理，本地脚本提供可执行的证据约束。
+
+```bash
+python scripts/plugin_run.py --input examples/pet-bowl-input.json --output-dir output/pet-review
+python scripts/validate_decisions.py --analysis output/pet-review/result.json --decisions examples/pet-bowl-decisions.json
+```
+
+第一步生成 `result.json` 与 `result.md`，同名目录不会覆盖。第二步校验示例建议的引用。实际使用时，宿主 AI 应针对用户的输入写出自己的 `decisions.json`，包含用户问题、产品改动、依据、假设、验证方法、主指标、护栏指标和判定条件，再运行校验器。
+
+`analysis_id` 绑定完整分析快照。输入更新、引用不存在、引文与原文不符都会导致失败。通过只代表引用完整，不代表建议正确或产生商业效果。
+
+## 产品取舍
+
+- 不同品类使用各自输入，不预设灯具人群、桌面改造或赠礼卖点。
+- 空价格保持为空，保留小数，正确读取 `1e2`。缺失数据不会被统计为零。
+- 只对明确声明的 `comparison_group` 计算样本价格；不同包装、条件和数据性质分开。
+- 来源 URL、采集日期、等级和原文一起保留。提供者的等级标签不等于核验结果。
+- 样本渠道数量不被解释为市场份额，重复竞品宣称不被解释为真实需求。
+- 缺失证据转成有完成条件的研究任务，具体品类判断由宿主 AI 和研究者完成。
+
+Content Growth 场景中，先选择一条有出处的竞品承诺，再提出适合自身产品的可证伪表达和测试方案，不自动输出可直接发布的营销结论。
+
+## Safe Demo 与验证
+
+The Safe Demo does not scrape, fetch or verify live market data. All committed examples are fictional portfolio fixtures.
+
+旧命令继续可用。`--dry-run` 标识离线演示，仍会写入指定报告：
+
+```bash
+python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
+python -m unittest discover -s tests -v
 powershell -ExecutionPolicy Bypass -File scripts/portfolio_audit.ps1
 ```
 
-The audit is the pre-commit gate for this public portfolio project. If it fails, do not commit or push.
+旧配置保留为研究参考，不会自动提高输入证据等级。网页、插件与旧命令共用 [分析核心](scripts/evidence_analysis.py)。
 
-## Safety Notes
+本地与 CI 验证覆盖数据边界、跨品类、引用完整性和 HTTP 接口。真实用户任务完成率、研究时间改善和业务收益尚未测量，试用计划见 [产品案例](docs/product-case.md)。
 
-- No credentials, secret keys, real customer data, or real company profile is included.
-- Example competitors are fictional.
-- Example metrics are synthetic and should not be treated as market facts.
-- The generated report is a portfolio demo, not investment, legal, compliance, or sourcing advice.
+开源依赖与贡献边界见 [docs/open-source.md](docs/open-source.md)。未宣称已发布插件商店或完成宿主 App 安装验收。

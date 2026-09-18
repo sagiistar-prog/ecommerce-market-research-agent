@@ -1,3 +1,5 @@
+> 这是 0.2 及以前的设计或验收记录。当前 0.3 行为与验证见 [插件契约](plugin.md) 和 [本轮验收](evidence-review-acceptance.md)。
+
 # Workflow
 
 ## 1. Input Product Brief

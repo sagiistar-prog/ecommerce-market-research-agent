@@ -1,4 +1,4 @@
 interface:
-  display_name: "ecommerce-market-research-agent"
-  short_description: "Organize a product brief and competitor evidence into testable ecommerce research hypotheses. Use fo"
-  default_prompt: "Use $ecommerce-market-research-agent to help complete the task with traceable inputs and reviewable outputs."
+  display_name: "Market Research Desk"
+  short_description: "Review competitor evidence and validate product hypotheses."
+  default_prompt: "Use $ecommerce-market-research-agent to review my evidence, propose a product-specific test and validate the citations."

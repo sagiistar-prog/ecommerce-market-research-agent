@@ -1,5 +1,14 @@
 # Maintenance log
 
+## 0.3.0 — 2026-09-18
+
+- Replaced fixed desk-product advice with category-independent evidence analysis.
+- Added declared comparable groups, missing-price handling, source metadata and synthetic/provided separation.
+- Added exact snapshot-bound citation checks for host-authored product hypotheses.
+- Added CSV import with undo, evidence navigation, stale-result warnings and structured export.
+- Output schema advances to 2.0; input remains compatible. Ungrouped legacy rows remain visible but do not create price benchmarks.
+- Validation scope and limitations: [acceptance](docs/evidence-review-acceptance.md).
+
 ## 0.2.0 — 2026-09-17
 
 - Added a versioned Codex plugin manifest with the existing Skill.

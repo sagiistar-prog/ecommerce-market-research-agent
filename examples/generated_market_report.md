@@ -1,131 +1,179 @@
-# Generated Market Research Report
+# Market research review
 
-Generated on: 2026-09-18
+## Decision snapshot
 
-## Safe Demo Notice
+Use this review to plan research. The supplied sample does not establish a launch decision.
 
-This report was generated from local fictional examples only. It does not scrape, fetch, or verify live market data. Treat all recommendations as hypotheses for portfolio demonstration.
+5 observations; 5 prices supplied; 5 synthetic rows; 0 rows with a source and capture date.
 
-- Dry run mode: enabled
-- Product brief: `examples/sample_product_brief.md`
-- Competitor fixture: `examples/sample_competitor_table.csv`
-- Evidence level for demo inputs: E0
-- Intended reader: AI product manager and content growth portfolio reviewer
+## Product question
 
-## Executive summary
+| Brief field | Supplied value |
+| --- | --- |
+| Category | Modular desk glow bars |
+| Target market | Canada |
+| Target price | USD 39-59 |
+| Intended channels | Short-video commerce, search-led marketplace listing, creator storefront |
+| Audience hypothesis | Small-space remote workers, student creators, and gift buyers who want a compact desk upgrade. |
+| Decision question | Identify positioning, buyer personas, content angles, and risk prompts for an early channel test. |
+| Positioning hypothesis | The product should feel useful, giftable, and visually satisfying without making unsupported productivity or wellness claims. |
+| Constraints | No real competitor data, no scraping, no private account data, no verified market-size claims. |
 
-| Layer | Output | Evidence |
-| --- | --- | --- |
-| Fact | Modular desk glow bars is tested for Canada at USD 39-59. | E0 demo fixture |
-| Inference | Visual desk transformation and small-space proof are likely stronger than technical feature lists. | E4 hypothesis |
-| Recommendation | Run content-first tests while keeping claims conservative and reviewed. | Requires manual review |
+## What the sample shows
 
-## Target market hypothesis
+- O001: Canada magnetic light bar kit USD offer excluding tax and shipping (synthetic): 5 submitted prices, USD 37.00 to 62.00, median USD 49.00. [E001, E002, E003, E004, E005]
+- O002: Creator storefront: 1 submitted observation. [E002]
+- O003: Search-led marketplace listing: 2 submitted observations. [E003, E004]
+- O004: Short-video commerce: 2 submitted observations. [E001, E005]
 
-- Category: Modular desk glow bars
-- Target market: Canada
-- Price band: USD 39-59
-- Primary channels: Short-video commerce, search-led marketplace listing, creator storefront
-- Audience hypothesis: Small-space remote workers, student creators, and gift buyers who want a compact desk upgrade.
-- Core hypothesis: buyers first understand the product through visible setup improvement, not abstract performance claims.
-- Fixture channel coverage: Short-video commerce: 2, Creator storefront: 1, Search-led marketplace listing: 2.
+## Comparable prices
 
-## User segments
+USD offer prices, grouped by the submitter. Missing prices remain missing. Groups do not include ungrouped observations.
 
-| Segment | Job to be done | Likely objection | Content response |
-| --- | --- | --- | --- |
-| Small-space remote worker | Wants a compact Modular desk glow bars setup that improves the desk visually. | May worry about clutter, cable visibility, and setup time. | Show footprint, cable routing, and before-after desk reset footage. |
-| Student creator | Needs an affordable visual upgrade for study clips and casual content. | May worry that lighting controls are complicated. | Use quick setup clips and simple scene presets. |
-| Gift buyer | Needs a useful desk gift that is easy to understand without exact specs. | May worry about compatibility, returns, and package contents. | Make package contents, setup requirements, and return policy plain. |
+| Group | Data | Priced / total | Min USD | Median USD | Mean USD | Max USD | Rows |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Canada magnetic light bar kit USD offer excluding tax and shipping | synthetic | 5 / 5 | 37.00 | 49.00 | 50.00 | 62.00 | E001, E002, E003, E004, E005 |
 
-## Competitor matrix summary
+## Next research actions
 
-| Fictional competitor | Price | Channel | Positioning | Key feature | Content hook | Evidence |
-| --- | --- | --- | --- | --- | --- | --- |
-| LumaNest | $44 | Short-video commerce | Cozy desk mood in minutes | Clip-on ambient scenes | Before and after desk reset | E0 |
-| PixelRail | $58 | Creator storefront | Creator-ready background lighting | Segmented color scenes | Setup transformation for small rooms | E0 |
-| FocusHalo | $37 | Search-led marketplace listing | Simple light for study corners | Low-brightness focus mode | Study desk upgrade under one minute | E0 |
-| GlowDock | $62 | Search-led marketplace listing | Premium modular desk light kit | Magnetic bar layout | Build your ideal desk glow | E0 |
-| BrightPace | $49 | Short-video commerce | Giftable desk upgrade for remote work | Gift box and presets | Desk gift ideas for apartment living | E0 |
+### T001 / First: Which observations can support the decision?
 
-## Price band observation
+Before a real product decision, replace synthetic or unspecified rows with permitted observations. Add a source link, capture date and evidence level. For a fictional exercise, keep the limitation explicit without collecting live data.
 
-- Fictional competitor price range: $37-$62.
-- Fictional average competitor price: $50.
-- Demo read: USD 39-59 should support a value-led message while leaving room for packaging, setup proof, and content assets.
-- Evidence note: all price points are synthetic and cannot be used as real market benchmarks.
+Completion evidence: For real decisions, each relevant observation has a traceable source and date. For fictional exercises, preserve synthetic labels and explain what remains unverified.
 
-## Product positioning
+Basis: E001, E002, E003, E004, E005
 
-| Positioning pillar | What to say | What to avoid |
-| --- | --- | --- |
-| Compact transformation | A simple visual desk upgrade for small spaces. | Unsupported productivity or wellness outcomes. |
-| Modular setup | Rearrangeable layout for desks, shelves, and content corners. | Claims of superior durability without proof. |
-| Giftable utility | Easy to understand, easy to set up, and visually satisfying. | Promises about universal compatibility. |
+### T002 / Next: Does the proposed audience need Modular desk glow bars?
 
-## Content growth angles
+Recruit people matching the supplied hypothesis: Small-space remote workers, student creators, and gift buyers who want a compact desk upgrade.. Ask about their last relevant purchase, current workaround and unmet need before showing the product.
 
-| Angle | Channel | Hook | Review needed |
-| --- | --- | --- | --- |
-| Desk reset transformation | Short-form visual commerce | Turn a cramped desk into a warmer Modular desk glow bars setup in one quick sequence. | Needs product footage and no productivity promise. |
-| Small-space proof | Creator storefront | Show how the kit fits a compact apartment or student desk in Canada. | Needs dimension proof and setup photos. |
-| Giftable upgrade | Search-led listing | Position as an easy desk gift for remote work, study, and creator corners. | Needs packaging, shipping, and return-policy review. |
-| Modular layout demo | Short-form visual commerce | Show three rearranged layouts from the same fictional kit. | Needs durability and attachment review. |
-| Differentiate from LumaNest | Short-video commerce | Counter the fixture hook 'Before and after desk reset' with a clearer use case. | Treat as synthetic competitor observation. |
-| Differentiate from PixelRail | Creator storefront | Counter the fixture hook 'Setup transformation for small rooms' with a clearer use case. | Treat as synthetic competitor observation. |
-| Differentiate from FocusHalo | Search-led marketplace listing | Counter the fixture hook 'Study desk upgrade under one minute' with a clearer use case. | Treat as synthetic competitor observation. |
+Completion evidence: Record concrete past behavior and disconfirming cases. Set the decision threshold before interviews; do not present this audience as a validated persona.
 
-## Channel strategy
+Basis: Submitted brief or missing brief fields
 
-| Channel | Role | Measure | Manual review focus |
-| --- | --- | --- | --- |
-| Short-form visual commerce | Use fast before-after demos and modular layout clips. | Hook rate, save rate, product-page click-through. | Avoid claims that imply guaranteed focus or wellness outcomes. |
-| Search-led marketplace listing | Start with dimensions, package contents, setup steps, and use cases. | Search conversion, question volume, return reasons. | Confirm all specs before publishing. |
-| Creator storefront | Ask creators to show honest setup time and desk fit. | Creator click-through, assisted purchases, qualitative objections. | Use fictional demo assumptions only in this repository. |
+### T003 / Later: Which promise should be tested first?
 
-## Risk notes
+Choose a cited competitor promise and compare it with a product-specific alternative supported by your own evidence. Keep audience, channel and offer fixed; specify the conversion event, sample size and stop rule before testing.
 
-| Risk | Why it matters | Mitigation |
-| --- | --- | --- |
-| Unsupported performance claims | Focus, wellness, and productivity claims can be misleading if unverified. | Use visual and functional claims only; review stronger wording manually. |
-| Country-specific compliance gaps | Lighting products may require labeling, safety, or packaging review. | Run a Canada compliance check before real launch use. |
-| Synthetic competitor data | Fixture rows are useful for workflow demonstration, not real competitive strategy. | Replace with reviewed source logs before production use. |
-| Price and shipping assumptions | The report does not verify landed cost, delivery time, or return policy. | Confirm costs, fulfillment, warranty, and return language before publishing. |
+Completion evidence: A recorded test outcome with denominator, uncertainty and a decision. A catchy hook alone does not establish demand or a unique advantage.
 
-## Evidence level and manual review notes
+Basis: E001, E002, E003, E004, E005
 
-### Source priority
+## Evidence ledger
 
-| Rank | Source type | Evidence | Notes |
-| --- | --- | --- | --- |
-| 1 | Product brief supplied by the user | E0 for demo, E1 after source-owner review | Primary context for category, country, price band, channels, and constraints. |
-| 2 | Reviewed user-provided research worksheet | E1 | Use only when the source owner confirms the material is allowed for this repository. |
-| 3 | Human-reviewed public pages | E2 | Must retain citations in production; not used in Safe Demo. |
-| 4 | Human-reviewed social or creator samples | E2 | Useful for content patterns; avoid treating engagement as market truth. |
-| 5 | Agent-generated hypothesis | E4 | Must be labeled as a hypothesis and converted into a test. |
+IDs identify input observations, not independent verified sources. Repeated brand or source entries may not be independent.
 
-### Evidence levels
+### E001 / LumaNest
 
-| Level | Label | Confidence | Allowed use |
-| --- | --- | --- | --- |
-| E0 | Fictional demo fixture | Demo only | Portfolio Safe Demo |
-| E1 | User-provided or approved review source | Depends on source owner review | Draft analysis |
-| E2 | Reviewed public source | Moderate when citation is retained | Low-risk observations |
-| E3 | Corroborated multi-source evidence | Higher confidence with source logs | Recommendations with caveats |
-| E4 | Unverified hypothesis | Low | Testing backlog only |
+| Field | Submitted value |
+| --- | --- |
+| Price USD | 44.00 |
+| Channel | Short-video commerce |
+| Positioning claim | Cozy desk mood in minutes |
+| Key feature | Clip-on ambient scenes |
+| Content hook | Before and after desk reset |
+| Comparison group | Canada magnetic light bar kit USD offer excluding tax and shipping |
+| Data kind | synthetic |
+| Declared evidence level | E0 |
+| Source URL (not fetched) | Not provided |
+| Observed at | Not provided |
+| Notes | Fictional demo competitor |
 
-### Manual review checklist
+### E002 / PixelRail
 
-- Verify product claims before using them in ads, listings, or creator scripts.
-- Review country-specific compliance requirements before launch.
-- Confirm price, shipping, warranty, returns, and sourcing assumptions.
-- Check that content hooks do not imply unsupported health, safety, or performance outcomes.
-- Separate observed evidence from generated hypotheses.
-- Confirm all public copy separates facts, inferences, and recommendations.
-- Replace synthetic rows with reviewed source logs before real launch decisions.
+| Field | Submitted value |
+| --- | --- |
+| Price USD | 58.00 |
+| Channel | Creator storefront |
+| Positioning claim | Creator-ready background lighting |
+| Key feature | Segmented color scenes |
+| Content hook | Setup transformation for small rooms |
+| Comparison group | Canada magnetic light bar kit USD offer excluding tax and shipping |
+| Data kind | synthetic |
+| Declared evidence level | E0 |
+| Source URL (not fetched) | Not provided |
+| Observed at | Not provided |
+| Notes | Fictional demo competitor |
 
-## Demo provenance
+### E003 / FocusHalo
 
-- Product and competitor names are fictional.
-- Metrics are synthetic and should not be treated as market facts.
-- No credentials, private customer data, real company data, or live marketplace data was used.
+| Field | Submitted value |
+| --- | --- |
+| Price USD | 37.00 |
+| Channel | Search-led marketplace listing |
+| Positioning claim | Simple light for study corners |
+| Key feature | Low-brightness focus mode |
+| Content hook | Study desk upgrade under one minute |
+| Comparison group | Canada magnetic light bar kit USD offer excluding tax and shipping |
+| Data kind | synthetic |
+| Declared evidence level | E0 |
+| Source URL (not fetched) | Not provided |
+| Observed at | Not provided |
+| Notes | Fictional demo competitor |
+
+### E004 / GlowDock
+
+| Field | Submitted value |
+| --- | --- |
+| Price USD | 62.00 |
+| Channel | Search-led marketplace listing |
+| Positioning claim | Premium modular desk light kit |
+| Key feature | Magnetic bar layout |
+| Content hook | Build your ideal desk glow |
+| Comparison group | Canada magnetic light bar kit USD offer excluding tax and shipping |
+| Data kind | synthetic |
+| Declared evidence level | E0 |
+| Source URL (not fetched) | Not provided |
+| Observed at | Not provided |
+| Notes | Fictional demo competitor |
+
+### E005 / BrightPace
+
+| Field | Submitted value |
+| --- | --- |
+| Price USD | 49.00 |
+| Channel | Short-video commerce |
+| Positioning claim | Giftable desk upgrade for remote work |
+| Key feature | Gift box and presets |
+| Content hook | Desk gift ideas for apartment living |
+| Comparison group | Canada magnetic light bar kit USD offer excluding tax and shipping |
+| Data kind | synthetic |
+| Declared evidence level | E0 |
+| Source URL (not fetched) | Not provided |
+| Observed at | Not provided |
+| Notes | Fictional demo competitor |
+
+## Original brief
+
+# Sample Product Brief
+This is a fictional and synthetic portfolio example. It does not describe a real brand, customer, supplier, or marketplace dataset.
+## Product Context
+- &#42;&#42;Category:&#42;&#42; Modular desk glow bars
+- &#42;&#42;Target country:&#42;&#42; Canada
+- &#42;&#42;Price band:&#42;&#42; USD 39-59
+- &#42;&#42;Primary channels:&#42;&#42; Short-video commerce, search-led marketplace listing, creator storefront
+- &#42;&#42;Audience hypothesis:&#42;&#42; Small-space remote workers, student creators, and gift buyers who want a compact desk upgrade.
+- &#42;&#42;Research goal:&#42;&#42; Identify positioning, buyer personas, content angles, and risk prompts for an early channel test.
+- &#42;&#42;Positioning note:&#42;&#42; The product should feel useful, giftable, and visually satisfying without making unsupported productivity or wellness claims.
+- &#42;&#42;Constraints:&#42;&#42; No real competitor data, no scraping, no private account data, no verified market-size claims.
+## Product Concept
+The fictional product is a set of magnetic light bars that attach to a desk edge or shelf. Users can rearrange the bars, switch color scenes, and use low-brightness ambient modes for calls, study sessions, or content backdrops.
+## Assumed Differentiators
+- Compact footprint for small desks.
+- Rearrangeable magnetic layout.
+- Soft ambient modes for video calls.
+- Giftable packaging concept.
+- Simple cable management.
+## Questions For The Agent
+- Which buyer segments should the team test first?
+- What competitor positions are crowded?
+- What content hooks fit the product without overclaiming?
+- What claims require human review before launch?
+
+## Interpretation limits
+
+- Only submitted observations are analyzed; sources and claims are not independently verified.
+- Comparison groups and evidence levels are declared by the submitter. They do not establish truth, demand, market share or a launch price.
+- Synthetic and provided data may coexist. Review each cited observation before using an aggregate.
+- No network requests or language-model calls run in this analyzer. Domain interpretation belongs to the host assistant or researcher.

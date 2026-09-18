@@ -1,4 +1,5 @@
 import http.client
+import json
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 import sys
@@ -23,3 +24,25 @@ class LocalHttpBoundary(unittest.TestCase):
     def test_negative_and_oversized_content_length_rejected(self):
         self.assertEqual(self.request({'Content-Length':'-1'}),400)
         self.assertEqual(self.request({'Content-Length':'1000001'}),400)
+
+    def post_json(self, payload):
+        connection = http.client.HTTPConnection('127.0.0.1', self.server.server_port, timeout=4)
+        connection.request('POST', '/api/generate', body=json.dumps(payload).encode(), headers={'Content-Type':'application/json'})
+        response = connection.getresponse()
+        result = response.status, json.loads(response.read())
+        connection.close()
+        return result
+
+    def test_valid_web_result_matches_plugin_analysis(self):
+        from plugin_run import run
+        root = Path(__file__).resolve().parents[1]
+        fixture = json.loads((root/'examples/pet-bowl-input.json').read_text(encoding='utf-8'))
+        status, result = self.post_json({'brief':fixture['brief'], 'competitors':fixture['competitors_csv']})
+        self.assertEqual(status, 200)
+        self.assertEqual(result['analysis'], run(fixture)['result']['analysis'])
+
+    def test_non_text_and_unknown_input_not_silently_coerced(self):
+        for payload in [{'brief':{}, 'competitors':'x'}, {'brief':'x', 'competitors':[]}, {'brief':'x', 'competitors':'x', 'unexpected':True}]:
+            status, result = self.post_json(payload)
+            self.assertEqual(status, 400)
+            self.assertIn('error', result)

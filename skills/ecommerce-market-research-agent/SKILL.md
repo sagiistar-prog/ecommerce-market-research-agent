@@ -1,64 +1,50 @@
 ---
 name: ecommerce-market-research-agent
-description: Organize a product brief and competitor evidence into testable ecommerce research hypotheses. Use for evidence review and research planning.
+description: Analyze a local product brief and competitor observations, then develop product-specific hypotheses with exact evidence citations and validation plans. Use for early ecommerce product research, not autonomous live scraping or market-size forecasting.
 ---
 
-# E-commerce Market Research Agent Skill
+# Market Research Desk
 
-Use this skill when a user wants to generate or improve a cross-border ecommerce market research report from a product brief, target country, price band, channel plan, and competitor notes.
+The local engine calculates sample statistics and evidence gaps. You, the host assistant, interpret the user's category, audience, constraints and decision. Python does not call a model or fetch websites.
 
-## Safety Boundary
+Resolve the plugin root two directories above this SKILL.md. Run bundled scripts from that root, not the user's project. Use task-provided materials only; keep private inputs and results out of tracked examples. The Safe Demo is fictional and network-free. External research, if requested, is a separate authorized step using available tools and `docs/source-policy.md`.
 
-- Use fictional or anonymized examples unless the user explicitly provides approved data.
-- Do not fetch live ecommerce data in the Safe Demo.
-- Do not include credentials, customer data, private chats, or real company profiles.
-- Label assumptions and evidence levels.
-- Add human review prompts for claims that touch compliance, sourcing, safety, health, certifications, durability, shipping, pricing, or advertising.
+## Analyze the material
 
-## Inputs
+Read `schemas/input.schema.json` and `docs/plugin.md` for CSV semantics. Preserve free text. Ask only for decision-critical gaps; do not invent an audience, feature, price or market. Do not convert missing prices to zero or group unlike offers to obtain statistics.
 
-- Product brief markdown.
-- Competitor table CSV.
-- Research rules config.
-- Optional source policy config.
+The deterministic parser recognizes labeled lines, not arbitrary prose. For a natural-language brief, use your language understanding to add `Category:`, `Target market:`, `Audience hypothesis:` and `Research goal:` lines **only from explicitly supplied information**, retaining the user's original wording below them. Chinese equivalents are 品类、目标市场、目标用户、研究问题. Leave genuinely absent values blank. Do not ask the user again for facts already present in the prose.
 
-## Workflow
-
-1. Read the product brief and identify category, target country, price band, channels, audience, and constraints.
-2. Read the competitor table and normalize price, channel, positioning, and content hooks.
-3. Apply source priority and evidence levels from config.
-4. Generate market hypotheses, not absolute market facts.
-5. Create buyer personas and content growth angles.
-6. Add a risk register and human review checklist.
-7. Save a markdown report.
-
-## Output Sections
-
-- Executive snapshot.
-- Research boundaries.
-- Market hypotheses.
-- Competitor matrix.
-- Price-band read.
-- Buyer personas.
-- Content growth angles.
-- Messaging pillars.
-- Risk register.
-- Human review checklist.
-
-## Safe Demo Command
+Use the chosen Python environment with `requirements-plugin.txt` installed. This command is a fictional demonstration, not a substitute for the user's input:
 
 ```bash
-python scripts/generate_market_report.py --input examples/sample_product_brief.md --competitors examples/sample_competitor_table.csv --output examples/generated_market_report.md --rules configs/research_rules.yaml --sources configs/source_policy.yaml --preferences configs/user_preferences.yaml --dry-run
+python scripts/plugin_run.py --input examples/pet-bowl-input.json --output-dir output/new-review
 ```
 
-## Versioned plugin interface
+For an actual task, prepare the JSON from the user's materials or send it through stdin; do not interpolate user text into shell commands. Existing output directories are never overwritten. Exit 0 returns one JSON object; exit 2 returns a structured error. Preserve input and explain how to correct the error rather than retrying unchanged input.
 
-Use the repository root as the working directory. For an installed plugin, resolve the root as two directories above this SKILL.md; never assume the user's project contains the bundled scripts.
+Inspect `result.analysis`: supplied brief, evidence ledger, grouped statistics, observations and research tasks. URLs, dates and evidence labels are metadata, not verification. Feature matching is literal, not semantic clustering. Sample counts do not establish demand, uniqueness or market share. Synthetic and provided prices are separated even when group labels match.
 
-1. Read `schemas/input.schema.json` before constructing input. Use `examples/plugin-input.json` for an offline demonstration.
-2. Install `requirements-plugin.txt` into the user's chosen Python environment when needed.
-3. Run `python scripts/plugin_run.py --input examples/plugin-input.json` from the plugin root. For user text, pass a JSON object through stdin; do not interpolate it into a shell command.
-4. Parse stdout as one JSON object; exit 0 means success, exit 2 means an input/output/dependency error. Show the error and preserve the input rather than retrying indefinitely.
-5. Present the Markdown result and material warnings. When the user asks to save artifacts, add `--output-dir output/<new-run-name>`. This creates files; an existing directory is never overwritten.
+Select research tasks relevant to the user's decision. Optional price-comparison gaps should not block a usability or positioning exercise. For an explicitly fictional offline exercise, explain the source limitation without demanding live collection; propose later verification only if needed for real-world use.
 
-The plugin does not grant permission to read unrelated files, publish content, run rendering or access accounts. The original CLI remains available. See `docs/plugin.md` for the capability boundary and the structured error contract.
+## Make the product judgment
+
+Answer the actual decision question. Connect the user's task and current alternative to a specific proposed change; explain why it deserves a test and what would disprove it. Distinguish competitor claims from inferences about user needs. If the material is insufficient, recommend the smallest useful research step rather than inventing a launch recommendation.
+
+For product or messaging hypotheses, create `decisions.json` using `schemas/decisions.schema.json`:
+
+- Copy the exact `analysis_id` from the generated snapshot.
+- Cite E001-style IDs and an exact substring from an allowed field, or `BRIEF` with `original_brief`. Do not quote a summary as source text.
+- State target user, problem, proposed change, reasoning and untested assumptions. Choose the number of proposals useful to the task; do not fill a quota.
+- Specify validation method, primary metric, guardrail and decision rule. Unsupported thresholds must be proposed for agreement before testing, never described as measured results.
+- Keep status `hypothesis`. Require domain review before public safety, health, compliance or advertising claims.
+
+Check references against the saved analysis:
+
+```bash
+python scripts/validate_decisions.py --analysis output/new-review/result.json --decisions output/new-review/decisions.json
+```
+
+The validator rejects stale snapshots, nonexistent IDs and quotes absent from cited fields. It proves reference integrity only; assess relevance, representativeness, contradictory evidence and reasoning yourself. `examples/pet-bowl-decisions.json` illustrates the format, not a stock answer for another category.
+
+Present the decision, evidence, assumptions and next test concisely in the user's language. Link saved artifacts when requested. Do not claim live research, measured customer value or automatic model evaluation from local checks.

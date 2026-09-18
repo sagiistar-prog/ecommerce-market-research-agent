@@ -11,17 +11,17 @@ sys.path.insert(0, str(ROOT / "scripts"))
 MAX_BYTES = 1_000_000
 
 def execute(data: dict) -> dict:
-    from generate_market_report import parse_product_brief_text, load_competitors_text, load_config, build_report
-    rows = load_competitors_text(data["competitors_csv"])
-    report = build_report(parse_product_brief_text(data["brief"]), rows, load_config(ROOT / "configs/research_rules.yaml"), load_config(ROOT / "configs/source_policy.yaml"), load_config(ROOT / "configs/user_preferences.yaml"), Path("submitted-brief.md"), Path("submitted-competitors.csv"), True)
-    return {"markdown": report, "competitor_count": len(rows), "manual_review_required": True}
+    from evidence_analysis import parse_brief, load_rows, analyze
+    from report_renderer import render_report
+    analysis = analyze(parse_brief(data["brief"]), load_rows(data["competitors_csv"]))
+    return {"markdown": render_report(analysis), "competitor_count": len(analysis["evidence"]), "manual_review_required": True, "analysis": analysis}
 
 
 def run(data: dict) -> dict:
     from jsonschema import Draft202012Validator
     schema = json.loads((ROOT / "schemas/input.schema.json").read_text(encoding="utf-8"))
     Draft202012Validator(schema).validate(data)
-    result = {"schema_version": "1.0", "status": "ok", "mode": 'offline_template', "result": execute(data), "warnings": ['离线模板不会抓取或核验真实市场数据。', '输入样本、推断和建议需要分别复核，不是商业效果证明。']}
+    result = {"schema_version": "2.0", "status": "ok", "mode": "local_evidence_analysis", "result": execute(data), "warnings": ["Only submitted observations are analyzed; source URLs are not fetched or verified.", "Evidence levels and comparison groups are supplied labels, not verified market facts."]}
     Draft202012Validator(json.loads((ROOT / "schemas/output.schema.json").read_text(encoding="utf-8"))).validate(result)
     return result
 
@@ -47,7 +47,7 @@ def main() -> int:
             if "csv" in payload["result"]: (destination / "timeline.csv").write_text(payload["result"]["csv"], encoding="utf-8")
         code = 0
     except ImportError:
-        payload = {"schema_version":"1.0", "status":"error", "error":{"code":"DEPENDENCY_MISSING", "message":"Install requirements-plugin.txt before running the plugin."}}
+        payload = {"schema_version":"2.0", "status":"error", "error":{"code":"DEPENDENCY_MISSING", "message":"Install requirements-plugin.txt before running the plugin."}}
         code = 2
     except Exception as exc:
         # Do not echo user text, stack traces or local file paths into the response.
@@ -58,7 +58,7 @@ def main() -> int:
             message = "Cannot read input or create a fresh output directory. Existing output is preserved."
         elif isinstance(exc, json.JSONDecodeError): message = "Input must be valid UTF-8 JSON."
         else: message = str(exc) if isinstance(exc, ValueError) else "Generation failed; check the documented input contract."
-        payload = {"schema_version":"1.0", "status":"error", "error":{"code":"INVALID_INPUT_OR_OUTPUT", "message":message}}
+        payload = {"schema_version":"2.0", "status":"error", "error":{"code":"INVALID_INPUT_OR_OUTPUT", "message":message}}
         code = 2
     sys.stdout.reconfigure(encoding="utf-8")
     print(json.dumps(payload, ensure_ascii=False, allow_nan=False))

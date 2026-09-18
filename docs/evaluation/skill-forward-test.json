@@ -1,0 +1,34 @@
+{
+  "date": "2026-09-18",
+  "kind": "independent_host_skill_exercise",
+  "synthetic_only": true,
+  "network_calls": 0,
+  "request": "Decide whether low weight should be the main promise for a fictional commuter travel mug.",
+  "first_pass_obstacles": [
+    "Unlabeled prose accepted but structured brief fields empty",
+    "Price and source tasks appeared mandatory in a non-pricing offline exercise"
+  ],
+  "changes": [
+    "Host extracts only explicit fields into labeled lines and preserves original prose",
+    "Price coverage optional, no arbitrary three-price gate, fictional exercises do not require collection"
+  ],
+  "regression": {
+    "decision_status": "research_only",
+    "known_information_reasked": false,
+    "original_brief_preserved": true,
+    "validation": {
+      "status": "ok",
+      "scope": "reference_validation_only",
+      "proposal_count": 2,
+      "citation_count": 11,
+      "analysis_id": "sha256:e4dea0a050b8280616d6347a1115738cebd444c50a10fccb6cb30b7c173f253b",
+      "manual_review_required": true
+    }
+  },
+  "fixture_note": "After the independent run, fixtures were rebound and checked against the final engine after task ordering/completion-copy refinements; source observations and proposals did not change.",
+  "limitations": [
+    "One independent host exercise, not a benchmark of model quality",
+    "Reference validity does not establish reasoning validity or customer benefit",
+    "No participant recruitment, product experiment or publication occurred"
+  ]
+}

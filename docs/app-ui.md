@@ -1,3 +1,5 @@
+> 这是 0.2 及以前的设计或验收记录。当前 0.3 行为与验证见 [插件契约](plugin.md) 和 [本轮验收](evidence-review-acceptance.md)。
+
 # Local Web App
 
 The project includes a lightweight local browser UI so users can try the agent without editing command-line arguments.

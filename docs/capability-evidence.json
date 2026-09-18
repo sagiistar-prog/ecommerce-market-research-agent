@@ -6,5 +6,8 @@
   "measurement_contract": "docs/metrics.schema.json",
   "user_validation": "planned, not conducted",
   "production_outcomes": "not measured",
-  "upstream_credit": "docs/open-source.md"
+  "upstream_credit": "docs/open-source.md",
+  "evidence_engine": "scripts/evidence_analysis.py",
+  "hypothesis_validation": "scripts/validate_decisions.py",
+  "current_acceptance": "docs/evidence-review-acceptance.md"
 }

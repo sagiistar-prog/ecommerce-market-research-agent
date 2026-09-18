@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "analysis_id": "sha256:434685511d96486988f57c1ace5f01f043cfbcd2b5cdf7eca2799d5dcf796721",
+  "proposals": [
+    {
+      "title": "先验证拆洗收益是否抵得过操作成本",
+      "target_user": "需要每天清洗猫碗的养猫家庭",
+      "problem_statement": "用户需要清洗猫碗，但当前材料不能证明拆卸结构更省事。",
+      "proposed_change": "用可拆内碗与一体式碗做同任务清洗对照，再决定是否把可拆洗作为主卖点。",
+      "reasoning": "E001 与 E003 都出现可拆内碗，E002 是一体式碗。这足以定义比较方案，但全部是虚构竞品记录，不能据此宣称用户偏好或清洗收益。",
+      "status": "hypothesis",
+      "evidence": [
+        {
+          "id": "E001",
+          "field": "key_feature",
+          "quote": "Removable inner bowl"
+        },
+        {
+          "id": "E002",
+          "field": "key_feature",
+          "quote": "One-piece bowl"
+        },
+        {
+          "id": "BRIEF",
+          "field": "original_brief",
+          "quote": "可拆内碗是否比一体式碗更容易清洗？"
+        }
+      ],
+      "assumptions": [
+        "同容量、同材质、同污渍条件下比较才有意义。",
+        "目标用户实际会每天清洗，仍需访谈确认。",
+        "竞品功能描述尚无公开来源证明。"
+      ],
+      "validation": {
+        "method": "先补齐可信来源，再让目标用户在随机顺序下清洗两个原型，记录操作和访谈。原型不得用于喂食。",
+        "primary_metric": "每位参与者完成相同清洗任务的用时差及任务成功情况。",
+        "guardrail_metric": "拆装失败、遗漏清洗与洒落次数。",
+        "decision_rule": "先确定目标样本和最小有用改善，再预注册判定规则；未确定阈值前不启动验证，也不发布更省时的声明。"
+      }
+    }
+  ]
+}

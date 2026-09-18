@@ -1,3 +1,5 @@
+> 这是 0.2 及以前的设计或验收记录。当前 0.3 行为与验证见 [插件契约](plugin.md) 和 [本轮验收](evidence-review-acceptance.md)。
+
 # Research Framework
 
 This framework describes the product management logic behind the E-commerce Market Research Agent. The goal is to make early market judgment repeatable without pretending that a Safe Demo has real market proof.

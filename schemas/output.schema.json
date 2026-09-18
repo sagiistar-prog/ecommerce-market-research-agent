@@ -5,13 +5,13 @@
       "type": "object",
       "properties": {
         "schema_version": {
-          "const": "1.0"
+          "const": "2.0"
         },
         "status": {
           "const": "ok"
         },
         "mode": {
-          "const": "offline_template"
+          "const": "local_evidence_analysis"
         },
         "result": {
           "type": "object",
@@ -27,12 +27,16 @@
             },
             "manual_review_required": {
               "const": true
+            },
+            "analysis": {
+              "$ref": "#/$defs/analysis"
             }
           },
           "required": [
             "markdown",
             "competitor_count",
-            "manual_review_required"
+            "manual_review_required",
+            "analysis"
           ],
           "additionalProperties": false
         },
@@ -56,7 +60,7 @@
       "type": "object",
       "properties": {
         "schema_version": {
-          "const": "1.0"
+          "const": "2.0"
         },
         "status": {
           "const": "error"
@@ -89,5 +93,423 @@
       ],
       "additionalProperties": false
     }
-  ]
+  ],
+  "$defs": {
+    "analysis": {
+      "type": "object",
+      "properties": {
+        "brief": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "target_country": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "price_band": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "primary_channels": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "audience_hypothesis": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "research_goal": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "positioning_note": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "constraints": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "category",
+            "target_country",
+            "price_band",
+            "primary_channels",
+            "audience_hypothesis",
+            "research_goal",
+            "positioning_note",
+            "constraints"
+          ],
+          "additionalProperties": false
+        },
+        "original_brief": {
+          "type": "string"
+        },
+        "decision_status": {
+          "enum": [
+            "needs_input",
+            "research_only"
+          ]
+        },
+        "sample": {
+          "type": "object",
+          "properties": {
+            "observation_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "priced_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "missing_price_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ungrouped_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "synthetic_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "source_date_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "price_groups": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "group": {
+                    "type": "string"
+                  },
+                  "data_kind": {
+                    "enum": [
+                      "synthetic",
+                      "provided",
+                      "unspecified"
+                    ]
+                  },
+                  "observation_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "priced_count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "minimum_usd": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "exclusiveMaximum": 1000000000.0
+                  },
+                  "maximum_usd": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "exclusiveMaximum": 1000000000.0
+                  },
+                  "mean_usd": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "exclusiveMaximum": 1000000000.0
+                  },
+                  "median_usd": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "exclusiveMaximum": 1000000000.0
+                  },
+                  "evidence_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^E[0-9]{3}$"
+                    }
+                  }
+                },
+                "required": [
+                  "group",
+                  "data_kind",
+                  "observation_count",
+                  "priced_count",
+                  "minimum_usd",
+                  "maximum_usd",
+                  "mean_usd",
+                  "median_usd",
+                  "evidence_ids"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "channel_counts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "channel": {
+                    "type": "string"
+                  },
+                  "count": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "evidence_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^E[0-9]{3}$"
+                    }
+                  }
+                },
+                "required": [
+                  "channel",
+                  "count",
+                  "evidence_ids"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "observation_count",
+            "priced_count",
+            "missing_price_count",
+            "ungrouped_count",
+            "synthetic_count",
+            "source_date_count",
+            "price_groups",
+            "channel_counts"
+          ],
+          "additionalProperties": false
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "brand": {
+                "type": "string"
+              },
+              "channel": {
+                "type": "string"
+              },
+              "positioning_claim": {
+                "type": "string"
+              },
+              "key_feature": {
+                "type": "string"
+              },
+              "content_hook": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              },
+              "observation_number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "price_usd": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0,
+                "exclusiveMaximum": 1000000000.0
+              },
+              "declared_evidence_level": {
+                "enum": [
+                  null,
+                  "E0",
+                  "E1",
+                  "E2",
+                  "E3",
+                  "E4"
+                ]
+              },
+              "data_kind": {
+                "enum": [
+                  "synthetic",
+                  "provided",
+                  "unspecified"
+                ]
+              },
+              "source_url": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "observed_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "comparison_group": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "brand",
+              "channel",
+              "positioning_claim",
+              "key_feature",
+              "content_hook",
+              "notes",
+              "observation_number",
+              "price_usd",
+              "declared_evidence_level",
+              "data_kind",
+              "source_url",
+              "observed_at",
+              "comparison_group"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "sample_price",
+                  "sample_coverage",
+                  "repeated_claim"
+                ]
+              },
+              "text": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^E[0-9]{3}$"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "text",
+              "evidence_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "research_tasks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "priority": {
+                "enum": [
+                  "first",
+                  "next",
+                  "later"
+                ]
+              },
+              "question": {
+                "type": "string"
+              },
+              "action": {
+                "type": "string"
+              },
+              "success_signal": {
+                "type": "string"
+              },
+              "evidence_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^E[0-9]{3}$"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "priority",
+              "question",
+              "action",
+              "success_signal",
+              "evidence_ids"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "analysis_id": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "brief",
+        "original_brief",
+        "decision_status",
+        "sample",
+        "evidence",
+        "observations",
+        "research_tasks",
+        "limitations",
+        "analysis_id"
+      ],
+      "additionalProperties": false
+    }
+  }
 }

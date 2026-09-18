@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-18",
+  "browser": "Chrome headless, isolated contexts",
+  "target": "local HTTP service",
+  "motion": "reduced",
+  "axe_scope": "Next actions view, wcag2a/wcag2aa/wcag21aa",
+  "results": [
+    {
+      "width": 1440,
+      "overflow": false,
+      "a11y": [],
+      "errors": [],
+      "sample": true,
+      "evidence_jump": true,
+      "structured_export": true,
+      "stale_export_blocked": true,
+      "chinese_category": true,
+      "csv_import": true,
+      "error_preserves_input": true
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "a11y": [],
+      "errors": [],
+      "sample": true,
+      "evidence_jump": true,
+      "structured_export": true,
+      "stale_export_blocked": true,
+      "chinese_category": true,
+      "csv_import": true,
+      "error_preserves_input": true
+    }
+  ],
+  "limitations": [
+    "No full accessibility certification or screen-reader audit",
+    "No private browser profile or production environment used"
+  ]
+}

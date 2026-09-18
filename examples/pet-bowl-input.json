@@ -1,0 +1,4 @@
+{
+  "brief": "品类：宠物碗\n目标市场：日本\n目标用户：需要每天清洗猫碗的养猫家庭\n研究问题：可拆内碗是否比一体式碗更容易清洗？\n约束：仅虚构练习材料，没有用户测试结果。",
+  "competitors_csv": "brand,price_usd,channel,positioning_claim,key_feature,content_hook,evidence_level,notes,comparison_group,data_kind\nFictional Bowl A,19.95,Demo shop,Easy daily cleaning,Removable inner bowl,Wash after feeding,E0,Synthetic fixture,single bowl excluding tax and shipping,synthetic\nFictional Bowl B,29.95,Demo shop,Simple daily care,One-piece bowl,Quick wipe,E0,Synthetic fixture,single bowl excluding tax and shipping,synthetic\nFictional Bowl C,,Demo shop,Easy daily cleaning,Removable inner bowl,Wash after feeding,E0,Synthetic fixture,single bowl excluding tax and shipping,synthetic\n"
+}

@@ -113,7 +113,6 @@ h2 {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
-  box-shadow: var(--shadow);
   min-width: 0;
 }
 
@@ -178,7 +177,7 @@ textarea:focus {
 #competitors {
   min-height: 180px;
   font-family: "Cascadia Mono", Consolas, monospace;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .actions {
@@ -190,7 +189,7 @@ textarea:focus {
 
 .primary-button,
 .secondary-button {
-  min-height: 40px;
+  min-height: 44px;
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0 14px;
@@ -315,7 +314,6 @@ textarea:focus {
   }
 }
 
-/* The existing teal workspace identity is retained. */
 [hidden] { display: none !important; }
 .intro { margin: 12px 0 0; color: var(--muted); max-width: 68ch; line-height: 1.6; }
 .field-help { font-size: 14px; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
@@ -328,7 +326,34 @@ textarea { font-size: 16px; caret-color: var(--accent); }
 ::selection { background: var(--accent-soft); color: var(--ink); }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
 
-::selection { background: #d8defa; color: #212741; }
-textarea, input { caret-color: #405aca; }
 button { transition: background-color 160ms ease-out, box-shadow 160ms ease-out; }
 button:active { transform: translateY(1px); }
+
+.input-tools, .result-nav, .export-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.input-tools { justify-content: space-between; }
+.result-nav, .export-actions { padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.export-actions { border-top: 1px solid var(--line); border-bottom: 0; }
+.result-nav button { cursor: pointer; background: transparent; border: 0; padding: 8px 12px; color: var(--muted); font-weight: 600; border-radius: 6px; }
+.result-nav button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent-dark); }
+.result-nav button:hover { background: var(--surface-muted); }
+.stale-notice { padding: 12px 18px; margin: 0; color: var(--warn); background: #fff8e7; font-size: 14px; }
+.sample-summary { color: var(--muted); font-variant-numeric: tabular-nums; }
+.report-preview > h3:first-child { margin-top: 0; font-size: 21px; line-height: 1.4; }
+.observation, .research-task { padding-block: 18px; border-top: 1px solid var(--line); }
+.observation p, .research-task p { max-width: 70ch; margin-bottom: 8px; }
+.research-task h4 { margin: 0 0 8px; font-size: 16px; }
+.research-task details { margin-block: 12px; }
+.evidence-refs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; color: var(--muted); font-size: 14px; }
+.evidence-refs button { min-width: 44px; border: 0; background: transparent; color: var(--accent-dark); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.evidence-refs button:hover { background: var(--accent-soft); }
+.evidence-record { padding-block: 12px; border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; padding-block: 8px; min-height: 44px; }
+summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.evidence-record dl { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(0, 2fr); gap: 12px; margin-bottom: 8px; }
+dt { color: var(--muted); font-size: 14px; }
+dd { margin: 0; font-variant-numeric: tabular-nums; }
+a { color: var(--accent-dark); text-underline-offset: 3px; }
+textarea::placeholder { color: var(--muted); opacity: 1; }
+.report-preview, textarea { scrollbar-color: var(--line) var(--surface); }
+@media (min-width: 981px) { .output-panel { max-height: calc(100vh - 146px); position: sticky; top: 20px; } .report-preview { min-height: 0; } }
+@media (max-width: 560px) { .input-tools .secondary-button { width: auto; } .result-nav button { flex: 1; } #status { text-align: left; } .export-actions { flex-direction: column; align-items: stretch; } }
