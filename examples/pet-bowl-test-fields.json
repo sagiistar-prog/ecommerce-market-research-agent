@@ -1,0 +1,12 @@
+{
+  "proposal_id": "P001",
+  "metric_label": "Cleaning task completion time",
+  "unit": "seconds",
+  "collection_method": "Fictional exercise only. Compare one-piece baseline with removable candidate at equal capacity, material and residue. Alternate task order. One independent pair per anonymous participant. Never feed animals with these prototypes.",
+  "direction": "lower",
+  "min_improvement": 10,
+  "min_pairs": 3,
+  "guardrail_label": "Assembly failure, missed cleaning or spill in either task",
+  "max_guardrail_rate": 0,
+  "data_kind": "synthetic"
+}

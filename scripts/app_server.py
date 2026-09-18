@@ -14,6 +14,7 @@ from pathlib import Path
 from jsonschema import ValidationError
 from plugin_run import run
 from hypothesis_review import prepare_review, export_review
+from experiment import plan_test, check_plan, evaluate_test
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -54,7 +55,7 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
 
     def read_json(self) -> dict:
         length = int(self.headers.get("Content-Length", "0"))
-        limit=4_000_000 if self.path in {'/api/decisions','/api/review'} else 1_000_000
+        limit=4_000_000 if self.path in {'/api/decisions','/api/review','/api/test-plan','/api/test-result'} else 1_000_000
         if not 0 < length <= limit:
             raise ValueError(f"Request body must contain 1 to {limit} bytes")
         raw = self.rfile.read(length).decode("utf-8")
@@ -92,12 +93,25 @@ class AgentRequestHandler(SimpleHTTPRequestHandler):
         if self.headers.get("Host") not in expected or (origin and origin not in {f"http://{h}" for h in expected}):
             self.send_json({"error": "Origin rejected"}, status=403)
             return
-        if self.path not in {"/api/generate", "/api/decisions", "/api/review"}:
+        if self.path not in {"/api/generate", "/api/decisions", "/api/review", "/api/test-plan", "/api/test-result"}:
             self.send_error(HTTPStatus.NOT_FOUND, "Unknown endpoint")
             return
 
         try:
             payload = self.read_json()
+            if self.path in {'/api/test-plan', '/api/test-result'}:
+                common = {'analysis', 'decisions', 'review'}
+                required = common | ({'plan', 'observations_csv'} if self.path == '/api/test-result' else
+                                      {'plan'} if 'plan' in payload else {'fields'})
+                if set(payload) != required:
+                    raise ValueError('Provide the evidence, hypotheses, recorded review and test plan or observations.')
+                args = [payload[key] for key in ('analysis', 'decisions', 'review')]
+                if self.path == '/api/test-result':
+                    self.send_json(evaluate_test(*args, payload['plan'], payload['observations_csv']))
+                else:
+                    plan = check_plan(*args, payload['plan']) if 'plan' in payload else plan_test(*args, payload['fields'])
+                    self.send_json({'plan': plan})
+                return
             if self.path in {"/api/decisions", "/api/review"}:
                 allowed={"analysis","decisions"} | ({"review"} if self.path=="/api/review" else set())
                 if set(payload)!=allowed:

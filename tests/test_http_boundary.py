@@ -65,3 +65,26 @@ class LocalHttpBoundary(unittest.TestCase):
     def test_invalid_hypothesis_shape_returns_a_recoverable_client_error(self):
         for body in ({'analysis':None,'decisions':{}},{'analysis':{},'decisions':[]},{'analysis':{},'decisions':{},'unexpected':True}):
             status,_=self.post_json(body,'/api/decisions');self.assertEqual(status,400)
+
+    def test_paired_plan_and_result_http_contract(self):
+        from plugin_run import run
+        from hypothesis_review import prepare_review
+        root=Path(__file__).resolve().parents[1]
+        fixture=json.loads((root/'examples/pet-bowl-input.json').read_text(encoding='utf-8'))
+        analysis=run(fixture)['result']['analysis']
+        decisions=json.loads((root/'examples/pet-bowl-decisions.json').read_text(encoding='utf-8'))
+        review=prepare_review(analysis,decisions)
+        fields=json.loads((root/'examples/pet-bowl-test-fields.json').read_text(encoding='utf-8'))
+        context=dict(analysis=analysis,decisions=decisions,review=review)
+        self.assertEqual(self.post_json({**context,'fields':fields},'/api/test-plan')[0],400)
+        review['entries'][0].update(choice='test',reason='Fictional test exercise')
+        status,body=self.post_json({**context,'fields':fields},'/api/test-plan')
+        self.assertEqual(status,200)
+        payload={**context,'plan':body['plan'],'observations_csv':(root/'examples/pet-bowl-test-observations.csv').read_text()}
+        status,result=self.post_json(payload,'/api/test-result')
+        self.assertEqual(status,200)
+        self.assertEqual(result['package']['result']['median_improvement'],20)
+        payload['observations_csv']='bad data'
+        self.assertEqual(self.post_json(payload,'/api/test-result')[0],400)
+        payload['unexpected']='value'
+        self.assertEqual(self.post_json(payload,'/api/test-result')[0],400)

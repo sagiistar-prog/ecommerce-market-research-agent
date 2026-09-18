@@ -1,0 +1,4 @@
+pair_id,baseline,candidate,guardrail_failed,source_ref
+EXAMPLE-A,100,80,0,Fictional authored observation A
+EXAMPLE-B,80,60,0,Fictional authored observation B
+EXAMPLE-C,60,50,0,Fictional authored observation C

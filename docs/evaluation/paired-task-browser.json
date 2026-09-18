@@ -1,0 +1,35 @@
+{
+  "scope": "Fictional paired tasks, not measured customer outcomes",
+  "reports": [
+    {
+      "width": 1440,
+      "recorded_plan": true,
+      "plan_draft_navigation": true,
+      "paired_result": true,
+      "guardrail_failure": true,
+      "invalid_csv_preserves_result": true,
+      "changed_plan_rejected": true,
+      "cancel_preserves_result": true,
+      "reload_and_recompute": true,
+      "stale_input_disables_export": true,
+      "axe_violations": 0,
+      "overflow": false,
+      "page_errors": []
+    },
+    {
+      "width": 390,
+      "recorded_plan": true,
+      "plan_draft_navigation": true,
+      "paired_result": true,
+      "guardrail_failure": true,
+      "invalid_csv_preserves_result": true,
+      "changed_plan_rejected": true,
+      "cancel_preserves_result": true,
+      "reload_and_recompute": true,
+      "stale_input_disables_export": true,
+      "axe_violations": 0,
+      "overflow": false,
+      "page_errors": []
+    }
+  ]
+}

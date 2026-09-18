@@ -1,3 +1,4 @@
+import { TestWorkbench } from './experiments.js';
 const briefInput = document.querySelector("#brief");
 const competitorsInput = document.querySelector("#competitors");
 const form = document.querySelector("#agent-form");
@@ -54,6 +55,7 @@ function refs(ids) {
 
 function renderReview() {
   if (!latestAnalysis) return;
+  document.querySelector('.export-actions').hidden = currentView === 'tests';
   reportPreview.replaceChildren();
   for (const button of resultNav.querySelectorAll('button')) button.setAttribute('aria-pressed', String(button.dataset.view === currentView));
   const a = latestAnalysis;
@@ -82,6 +84,8 @@ function renderReview() {
     }
   } else if (currentView === 'hypotheses') {
     renderHypotheses();
+  } else if (currentView === 'tests') {
+    testBench.render(reportPreview); syncControls();
   } else {
     reportPreview.append(element('h3', 'Inspect the submitted evidence'), element('p', 'These are input records. Source links and evidence levels have not been verified.', 'field-help'));
     for (const item of a.evidence) {
@@ -138,7 +142,7 @@ function syncControls() {
   importButton.disabled = busy;
   undoButton.disabled = busy;
   resultNav.hidden = !latestAnalysis;
-  document.querySelector('.export-actions').hidden = !latestAnalysis;
+  document.querySelector('.export-actions').hidden = !latestAnalysis || currentView === 'tests';
   staleNotice.hidden = !latestAnalysis || resultVersion === inputVersion;
   form.setAttribute('aria-busy', String(busy));
   submitButton.textContent = busy ? 'Analyzing observations…' : 'Analyze observations';
@@ -171,6 +175,7 @@ async function loadSample() {
 async function generateReport(event) {
   event.preventDefault();
   if (busy) return;
+  if(testBench.hasWork()&&!confirm('Analyze new evidence? Download the current test first to keep it.'))return;
   const version = inputVersion;
   const snapshot = { brief: briefInput.value, competitors: competitorsInput.value };
   if (!snapshot.brief.trim() || !snapshot.competitors.trim()) { setStatus('Add a product brief and competitor CSV before generating.'); return; }
@@ -182,6 +187,7 @@ async function generateReport(event) {
     latestReport = payload.report;
     latestAnalysis = payload.analysis;
     latestDecisions = null; currentReview = null; reviewUndo = null; reviewDrafts = {};
+    testBench.clear();
     currentView = 'summary';
     resultVersion = version;
     renderReview();
@@ -289,7 +295,9 @@ function renderHypotheses() {
       renderReview();document.querySelector(`#hypothesis-${id} select`).focus();setStatus(`${id}: ${choices[row.choice]}. Download the review to keep your choices.`);
     });
     reason.addEventListener('input',()=>reason.setCustomValidity(''));
-    form.append(label,select,reasonLabel,reason,save);section.append(element('p',`Recorded: ${choices[row.choice]}`,'recorded-choice'),form);reportPreview.append(section);
+    form.append(label,select,reasonLabel,reason,save);section.append(element('p',`Recorded: ${choices[row.choice]}`,'recorded-choice'),form);
+    if(row.choice==='test')section.append(reviewButton('Define and review a test',()=>{currentView='tests';renderReview();reportPreview.focus();}));
+    reportPreview.append(section);
   });
   syncControls();
 }
@@ -305,6 +313,8 @@ async function importHypotheses(load) {
     const body={analysis:latestAnalysis,decisions,...(restoring?{review:data.review}:{})};
     const result=await request(restoring?'/api/review':'/api/decisions',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(version!==inputVersion){setStatus('Inputs changed. Your previous review was kept; analyze again before importing.');return;}
+    if(testBench.hasWork()&&!confirm('Replace hypotheses? Download the current test first to keep it.')){setStatus('Existing hypotheses and test kept.');return;}
+    testBench.clear();
     latestDecisions=decisions;currentReview=restoring?result.package.review:result.review;reviewUndo=null;reviewDrafts={};
     currentView='hypotheses';renderReview();reportPreview.focus();setStatus(restoring?'Review restored. No product outcome has been marked as validated.':'Citations checked. Review the hypotheses before choosing a next step.');
   }catch(error){setStatus(error instanceof SyntaxError?'The JSON could not be read. Your previous review is unchanged.':error.message);}
@@ -327,4 +337,17 @@ async function exportHypotheses(format) {
   }catch(error){setStatus('Review could not be exported. Your choices are kept. '+error.message);}
   finally{busy=false;syncControls();}
 }
+const testBench = new TestWorkbench({context:()=>({analysis:latestAnalysis,decisions:latestDecisions,review:currentReview}),
+  request, download:downloadFile,status:setStatus,renderAll:renderReview,
+  run:async action=>{
+    if(busy||resultVersion!==inputVersion)return;
+    if(Object.keys(reviewDrafts).length){setStatus('Record your edited hypothesis choice before working on the test.');return;}
+    const version=inputVersion;busy=true;syncControls();setStatus('Checking test inputs…');
+    try{
+      const commit=await action();
+      if(version!==inputVersion){setStatus('Inputs changed. Existing test kept; restore the matching evidence before continuing.');return;}
+      commit();renderReview();document.querySelector('#test-result')?.focus();
+    }catch(error){setStatus((error instanceof SyntaxError?'The JSON could not be read.':error.message)+' Existing test kept.');}
+    finally{busy=false;syncControls();}
+  }});
 syncControls();

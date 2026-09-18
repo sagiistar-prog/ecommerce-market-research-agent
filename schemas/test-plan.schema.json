@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Paired task test criteria",
+  "type": "object",
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "pattern": "^P[0-9]{3}$"
+    },
+    "metric_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "pattern": "\\S"
+    },
+    "unit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 60,
+      "pattern": "\\S"
+    },
+    "collection_method": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "pattern": "\\S"
+    },
+    "direction": {
+      "enum": [
+        "lower",
+        "higher"
+      ]
+    },
+    "min_improvement": {
+      "type": "number",
+      "exclusiveMinimum": 0,
+      "maximum": 1000000000
+    },
+    "min_pairs": {
+      "type": "integer",
+      "minimum": 2,
+      "maximum": 1000
+    },
+    "guardrail_label": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000,
+      "pattern": "\\S"
+    },
+    "max_guardrail_rate": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "data_kind": {
+      "enum": [
+        "synthetic",
+        "provided"
+      ]
+    }
+  },
+  "required": [
+    "proposal_id",
+    "metric_label",
+    "unit",
+    "collection_method",
+    "direction",
+    "min_improvement",
+    "min_pairs",
+    "guardrail_label",
+    "max_guardrail_rate",
+    "data_kind"
+  ],
+  "additionalProperties": false
+}

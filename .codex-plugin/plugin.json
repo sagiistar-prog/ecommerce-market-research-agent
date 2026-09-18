@@ -1,7 +1,7 @@
 {
   "name": "ecommerce-market-research-agent",
-  "version": "0.4.0",
-  "description": "复核竞品观察，形成有精确引用和验证方案的产品假设",
+  "version": "0.5.0",
+  "description": "复核竞品证据，记录产品假设并核对成对任务测试结果",
   "author": {
     "name": "Oscar Qi",
     "url": "https://github.com/sagiistar-prog"
@@ -11,8 +11,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Market Research Desk",
-    "shortDescription": "复核竞品观察，形成有精确引用和验证方案的产品假设",
-    "longDescription": "本地分析样本价格、证据与缺口，由宿主 AI 形成品类相关的产品假设。校验引用及分析快照，不自动抓取网站或调用模型。",
+    "shortDescription": "复核竞品证据，记录产品假设并核对成对任务测试结果",
+    "longDescription": "本地分析样本价格、证据与缺口，由宿主 AI 形成品类相关的产品假设。校验引用、记录人工取舍，按预设指标与护栏复核成对观察。不自动抓取网站或调用模型。",
     "developerName": "Oscar Qi",
     "category": "Productivity",
     "capabilities": [

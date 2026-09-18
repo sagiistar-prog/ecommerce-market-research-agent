@@ -1,5 +1,12 @@
 # Maintenance log
 
+## 0.5.0 — 2026-09-19
+
+- Added evidence-bound paired task plans with explicit primary thresholds, sample requirements and a binary guardrail.
+- Added local CSV observation checks, descriptive results, result recomputation on import and CLI exports to fresh directories.
+- Added a Tests workbench with result-first layout, recoverable failures and fictional technical fixtures.
+- Criteria met does not mean statistical significance, verified observations or launch readiness.
+
 ## 0.4.0 — 2026-09-18
 
 - Added local hypothesis import, citation readback, explicit reviewer choices and reasons, undo, JSON restore and Markdown export.

@@ -2,9 +2,11 @@
 
 把产品问题和竞品观察整理成可核对的样本结论，再决定下一步验证什么。适合手头已有资料、需要评估新品方向的产品与品类人员。
 
-当前版本 0.4：本地分析器负责数据检查、价格分组和证据追溯；Skill 引导宿主 AI 根据具体品类形成产品假设。网页可独立离线使用，无需模型密钥。**不自动抓取网站，不把虚构样例当作市场事实。**
+当前版本 0.5：本地分析器负责数据检查、价格分组和证据追溯；Skill 引导宿主 AI 根据具体品类形成产品假设。研究者可记录成对任务测试计划，导入观察并核对指标与护栏。网页可独立离线使用，无需模型密钥。**不自动抓取网站，不把虚构样例当作市场事实。**
 
-[产品取舍](docs/product-case.md) | [本轮验收](docs/hypothesis-review-acceptance.md) | [插件与数据格式](docs/plugin.md) | [维护记录](CHANGELOG.md)
+[产品取舍](docs/product-case.md) | [本轮验收](docs/paired-task-tests.md) | [插件与数据格式](docs/plugin.md) | [维护记录](CHANGELOG.md)
+
+新增 [测试计划与结果复核](docs/paired-task-tests.md)：选择 Plan a test 后，在 Tests 记录主指标、阈值、样本量和护栏，下载计划，随后导入观察 CSV。结果只说明提交数据是否达到所设条件，不等于统计显著或商业价值已经成立。全部示例明确为虚构练习。
 
 ## 下载后使用
 
@@ -26,6 +28,7 @@ python scripts/app_server.py --port 8765
 4. 在 Hypotheses 导入宿主 AI 生成的 `decisions.json`，展开引用核对原始字段。首次体验可先 Load sample，再 Try sample hypotheses。
 5. 逐条选择 Plan a test、Defer 或 Reject，填写理由并 Record choice；默认保持 Not reviewed，可以撤销上一次记录。
 6. Download review 保存包含证据、假设和取舍的 JSON；Download review notes 导出阅读版。重开页面后，分析相同的简述与 CSV，再导入保存的 review JSON 恢复。修改输入后旧结果停止导出。
+7. 对已计划的假设，在 Tests 记录成对任务计划，导入观察 CSV，下载结果。恢复测试时先恢复匹配的评审，再导入计划或结果 JSON；已有结果会重新计算。
 
 输入只在本机请求中处理，网页服务不保存输入或请求正文，也不访问资料中的 URL。服务用于本机单人使用，不是已部署的多租户系统。
 

@@ -41,7 +41,7 @@
               <p id="status" role="status">Ready</p>
             </div>
             <p id="stale-notice" class="stale-notice" hidden>Inputs changed. This review shows the previous inputs; analyze again to export.</p>
-            <nav class="result-nav" id="result-nav" aria-label="Review sections" hidden><button type="button" data-view="summary" aria-pressed="true">Summary</button><button type="button" data-view="tasks" aria-pressed="false">Next actions</button><button type="button" data-view="evidence" aria-pressed="false">Evidence</button><button type="button" data-view="hypotheses" aria-pressed="false">Hypotheses</button></nav>
+            <nav class="result-nav" id="result-nav" aria-label="Review sections" hidden><button type="button" data-view="summary" aria-pressed="true">Summary</button><button type="button" data-view="tasks" aria-pressed="false">Next actions</button><button type="button" data-view="evidence" aria-pressed="false">Evidence</button><button type="button" data-view="hypotheses" aria-pressed="false">Hypotheses</button><button type="button" data-view="tests" aria-pressed="false">Tests</button></nav>
             <input id="hypothesis-file" type="file" accept=".json,application/json" hidden />
             <article id="report-preview" class="report-preview" tabindex="-1">
               <p class="empty-state">Add your brief and competitor notes to begin.</p>
@@ -53,6 +53,6 @@
     </main>
 
     <noscript>This local workspace needs JavaScript. You can also use scripts/plugin_run.py to analyze files.</noscript>
-    <script src="./app.js"></script>
+    <script type="module" src="./app.js"></script>
   </body>
 </html>

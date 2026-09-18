@@ -54,3 +54,11 @@ Present the decision, evidence, assumptions and next test concisely in the user'
 After validating `decisions.json`, explain how to import it in the local app's Hypotheses view after analyzing the matching brief and CSV. The user records Plan a test, Defer or Reject with a reason; leave proposals unreviewed until they choose. Do not manufacture reviewer choices or measured outcomes.
 
 A downloaded review JSON includes the evidence and proposal snapshots, choices and reasons. To resume, analyze the same inputs and import that review file. Changed proposals invalidate old choices. Markdown notes are for reading, not round-trip import. The app does not automatically save; ask the user to download their review before closing. `validation_status: not_measured` remains true after a completed review.
+
+## Follow a selected test through to observations
+
+For a hypothesis explicitly marked Plan a test, read `docs/paired-task-tests.md` and `schemas/test-plan.schema.json`. Help the researcher define a comparable paired task, nonnegative primary measure, unit, direction, minimum useful improvement, minimum independent pairs and a binary guardrail before collecting observations. Do not invent thresholds, participant observations, independent samples or a reviewer choice. If a decision-critical threshold is missing, leave the plan incomplete and ask for it.
+
+Use the Tests view or `scripts/review_test.py` with the exported review and plan fields. Save the plan before evaluating supplied observation CSV. Use one independent pair per row and preserve its source reference. The local tool rejects missing numeric values and duplicate IDs, computes the median of within-pair changes and checks the guardrail. It does not perform independent-group A/B testing, infer significance or establish market demand.
+
+Keep fictional exercises labeled synthetic. User-provided observations remain unverified. The plan hash establishes consistency, not chronological preregistration; do not claim the plan predates the observations without separate evidence. A result meeting its recorded conditions is an input to a human decision, never automatic launch approval. Export results to a new directory and keep private observations out of tracked examples.
